@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/backgroundPrimary">
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/list_todo_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundPrimary"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/list_todo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.05"
+            android:paddingStart="8dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="10dp"
+            android:src="@drawable/temp_icon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/list_todo_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:gravity="center_vertical"
+            android:text="Workspace Todo"
+            android:textColor="@color/textPrimaryBright"
+            android:textSize="@dimen/text_large"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <ImageView
+        android:id="@+id/list_todo_add_ListUnderGroup"
+        android:layout_width="@dimen/btn_icon_large"
+        android:layout_height="@dimen/btn_icon_large"
+        android:background="@drawable/ripple_effect"
+        android:src="@drawable/icon_add_todo"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="@id/list_todo_ll"
+        app:layout_constraintBottom_toBottomOf="@id/list_todo_ll"
+        app:layout_constraintEnd_toStartOf="@id/list_todo_btn_expand_group"
+        android:layout_marginEnd="8dp"/>
+
+
+    <ImageView
+        android:id="@+id/list_todo_btn_expand_group"
+        android:layout_width="@dimen/btn_icon_large"
+        android:layout_height="@dimen/btn_icon_large"
+        android:background="@drawable/ripple_effect"
+        android:src="@drawable/arrow_left"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/list_todo_ll"
+        app:layout_constraintBottom_toBottomOf="@id/list_todo_ll"
+        android:layout_marginEnd="8dp"/>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/list_todo_expandable_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundPrimary"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_todo_ll"
+        android:layout_marginStart="@dimen/hori_extra_large">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/textPrimary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_group_placeholder"
+            android:textColor="@color/textPrimary"
+            android:textSize="@dimen/text_medium"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginStart="@dimen/hori_large"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_todo_expanded_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/backgroundPrimary"
+            android:visibility="gone"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

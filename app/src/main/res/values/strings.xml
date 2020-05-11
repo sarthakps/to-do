@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">To Do</string>
+
+    <string name="empty_group_placeholder">There\'s nothing here!</string>
+    <string name="add_username_hint">enter your username...</string>
+
 </resources>
