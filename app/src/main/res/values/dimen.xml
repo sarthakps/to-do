@@ -3,21 +3,35 @@
 
     <!-- HORIZONTAL MARGIN -->
     <dimen name="hori_small">8dp</dimen>
-    <dimen name="hori_large">12dp</dimen>
+    <dimen name="hori_medium">12dp</dimen>
+    <dimen name="hori_large">16dp</dimen>
     <dimen name="hori_extra_large">20dp</dimen>
 
 
     <!-- VERTICAL MARGIN -->
-    <dimen name="vert_medium">16dp</dimen>
-    <dimen name="vert_large">20dp</dimen>
+    <dimen name="vert_small">8dp</dimen>
+    <dimen name="vert_medium">12dp</dimen>
+    <dimen name="vert_large">16dp</dimen>
+    <dimen name="vert_extra_large">20dp</dimen>
+
+
+    <!-- RADIUS -->
+    <dimen name="theme_image_preview_height">75dp</dimen>
+    <dimen name="theme_image_preview_width">42dp</dimen>
 
 
     <!-- TEXT -->
+    <dimen name="text_small">12sp</dimen>
     <dimen name="text_medium">15sp</dimen>
     <dimen name="text_large">20sp</dimen>
+
 
     <!-- BUTTON -->
     <dimen name="btn_icon_medium">24dp</dimen>
     <dimen name="btn_icon_large">30dp</dimen>
+
+
+    <!-- ICON -->
+    <dimen name="list_icon_size">32dp</dimen>
 
 </resources>

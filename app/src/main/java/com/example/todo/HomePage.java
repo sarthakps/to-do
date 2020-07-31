@@ -1,35 +1,62 @@
 package com.example.todo;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import Adapters.IconSelectorAdapter;
 import Adapters.ListTodoAdapter;
+import Adapters.ThemeSelectorAdapter;
+import Database.DatabaseManager;
+import Objects.ConstantsDB;
 import Objects.ListObject;
+import Objects.ThemeObject;
 
 public class HomePage extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private static Context staticContext;
 
     private List<ListObject> persistentList;
-    private RecyclerView persistentRecycler;
+    private List<ListObject> dynamicList;
+
+    private RecyclerView persistentRecycler;    //pre-loaded list recycler
+    private RecyclerView dynamicRecycler;       //user added list recycler
+
     private ListTodoAdapter persistentAdapter;
+    private ListTodoAdapter dynamicAdapter;
+
+
+    public static String SelectedIcon;
+    public static int SelectedTheme;
+    private static ImageView selectedIconImage;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        assignUIcomponents();
+        staticContext = getApplicationContext();
 
-        loadPersistentList();
+        assignUIcomponents();
 
         loadFromDB();
     }
@@ -41,31 +68,142 @@ public class HomePage extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-    private void assignUIcomponents(){
+        switch (item.getItemId()) {
+            case R.id.btnMenu_add_todo_list:
+                add_todo_list_popup();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void assignUIcomponents() {
         //set Toolbar and toolbar title
         toolbar = findViewById(R.id.homepage_toolbar);
         setSupportActionBar(toolbar);
         setTitle(getSharedPreferences("user_data", MODE_PRIVATE).getString("username", "To Do"));
 
         persistentList = new ArrayList<>();
+        dynamicList = new ArrayList<>();
 
+        //setup persistent list's recycler
         persistentRecycler = findViewById(R.id.homepage_persistent_todo_recycler);
-        persistentRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        persistentRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this));
 
-        persistentAdapter = new ListTodoAdapter(getApplicationContext(), R.layout.list_todo, persistentList);
+        //setup dynamic list's recycler
+        dynamicRecycler = findViewById(R.id.homepage_dynamic_todo_recycler);
+        dynamicRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this));
+
+        //adapter for persistent list
+        persistentAdapter = new ListTodoAdapter(HomePage.this, R.layout.list_todo, persistentList);
         persistentRecycler.setAdapter(persistentAdapter);
+
+        //adapter for dynamic list
+        dynamicAdapter = new ListTodoAdapter(HomePage.this, R.layout.list_todo, dynamicList);
+        dynamicRecycler.setAdapter(dynamicAdapter);
     }
 
 
-    private void loadPersistentList(){
-        persistentList.add(new ListObject(1, "Today", R.drawable.icon_today, false));
-        persistentList.add(new ListObject(2, "Important", R.drawable.icon_star, false));
-        persistentAdapter.notifyDataSetChanged();
+    public void add_todo_list_popup() {
+        //inflating popup layout and assigning views
+        view = LayoutInflater.from(HomePage.this).inflate(R.layout.popup_add_todo_list, null);
+        selectedIconImage = view.findViewById(R.id.popup_addList_select_icon);
+        final EditText listName = view.findViewById(R.id.popup_addList_list_name);
+
+        //creating ALERT DIALOG
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+
+
+        //setting up THEME RecyclerView
+        RecyclerView themeRecycler = view.findViewById(R.id.popup_addList_theme_recycler);
+        themeRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this, LinearLayoutManager.HORIZONTAL, false));
+        ( (SimpleItemAnimator) themeRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+
+
+        //THEME recycler caching
+        themeRecycler.setHasFixedSize(true);
+        themeRecycler.setItemViewCacheSize(40);
+        themeRecycler.setDrawingCacheEnabled(true);
+        themeRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+
+        //setting up ICON RecyclerView
+        RecyclerView iconRecycler = view.findViewById(R.id.popup_addList_icon_recycler);
+        iconRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this, LinearLayoutManager.HORIZONTAL, false));
+        ( (SimpleItemAnimator) iconRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+
+
+        //Theme Recycler ADAPTER
+        ThemeSelectorAdapter themeAdapter = new ThemeSelectorAdapter(HomePage.this, R.layout.list_theme_selector, ConstantsDB.getThemeObjectsList());
+        themeRecycler.setAdapter(themeAdapter);
+
+
+        //Icon Recycler ADAPTER
+        IconSelectorAdapter iconAdapter = new IconSelectorAdapter(HomePage.this, R.layout.list_icon_selector, ConstantsDB.getIconsList());
+        iconRecycler.setAdapter(iconAdapter);
+
+
+        //CANCEL button click listeners here
+        view.findViewById(R.id.popup_addList_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
+
+        //DONE button click listener
+        view.findViewById(R.id.popup_addList_done).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!listName.getText().toString().equals("")){
+                    //add list to database
+                    DatabaseManager db = new DatabaseManager(HomePage.this);
+                    int id = db.AddListToDB(listName.getText().toString().trim(), SelectedIcon, getResources().getResourceName(SelectedTheme), false);
+                    db.close();
+
+                    dynamicList.add(new ListObject(id, listName.getText().toString().trim(), getResources().getIdentifier(SelectedIcon, "drawable", getApplicationContext().getPackageName()), false));
+                }
+                alertDialog.cancel();
+            }
+        });
+
+        alertDialog.show();
     }
 
+
+    public static void setSelectedIcon(String iconName){
+        selectedIconImage.setImageResource(staticContext.getResources().getIdentifier(iconName, "drawable", staticContext.getPackageName()));
+        SelectedIcon = iconName;
+    }
+
+
+    public static void setSelectedTheme(int themeRes){
+        SelectedTheme = themeRes;
+    }
 
     //read username from shared preferences and set toolbar title = username
-    private void loadFromDB(){}
+    private void loadFromDB() {
+        //load persistent list
+        persistentList.add(new ListObject(-200, "Today", R.drawable.icon_today, false));
+        persistentList.add(new ListObject(-400, "Important", R.drawable.icon_star, false));
+        persistentAdapter.notifyDataSetChanged();
+
+        //load user added lists
+        DatabaseManager db = new DatabaseManager(HomePage.this);
+        Cursor res = db.getAllLists();
+
+        ListObject object;
+        while(res.moveToNext()){
+            object = new ListObject(res.getInt(0), res.getString(1), getResources().getIdentifier(res.getString(2), "drawable", getPackageName()), Boolean.parseBoolean(res.getInt(4) + ""));
+            dynamicList.add(object);
+        }
+        dynamicAdapter.notifyDataSetChanged();
+    }
 
 }

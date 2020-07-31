@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/vert_medium">
+
+    <EditText
+        android:id="@+id/popup_add_task_taskDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textPrimary"
+        android:hint="Add a task"
+        android:textSize="@dimen/text_medium"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="textCapSentences"
+        app:layout_constraintEnd_toStartOf="@id/popup_add_task_done"
+        android:layout_marginEnd="@dimen/hori_medium"
+        android:layout_marginStart="@dimen/hori_medium"
+        android:layout_marginTop="@dimen/vert_extra_large"/>
+
+    <ImageView
+        android:id="@+id/popup_add_task_done"
+        android:layout_width="@dimen/btn_icon_large"
+        android:layout_height="@dimen/btn_icon_large"
+        android:src="@drawable/icon_done"
+        android:background="@drawable/ripple_effect"
+        android:focusable="true"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/popup_add_task_taskDesc"
+        app:layout_constraintBottom_toBottomOf="@id/popup_add_task_taskDesc"
+        android:layout_marginEnd="@dimen/hori_medium"
+        android:layout_marginTop="@dimen/vert_medium"/>
+
+    <TextView
+        android:id="@+id/popup_add_task_pick_date_static_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/vert_medium"
+        android:background="@drawable/ripple_effect_oval"
+        android:clickable="true"
+        android:padding="5dp"
+        android:text="Pick a date"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_medium"
+        app:layout_constraintStart_toStartOf="@+id/popup_add_task_taskDesc"
+        app:layout_constraintTop_toBottomOf="@id/popup_add_task_taskDesc" />
+    <ImageView
+        android:id="@+id/popup_add_task_pick_date_button"
+        android:layout_width="@dimen/btn_icon_large"
+        android:layout_height="@dimen/btn_icon_large"
+        android:layout_marginStart="@dimen/hori_medium"
+        android:src="@drawable/icon_date_picker"
+        android:background="@drawable/ripple_effect"
+        android:focusable="true"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/popup_add_task_pick_date_static_text"
+        app:layout_constraintStart_toEndOf="@id/popup_add_task_pick_date_static_text"
+        app:layout_constraintTop_toTopOf="@id/popup_add_task_pick_date_static_text" />
+
+    <TextView
+        android:id="@+id/popup_add_task_clear_duedate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/light_gray"
+        android:text="X Clear due date"
+        app:layout_constraintTop_toBottomOf="@id/popup_add_task_pick_date_static_text"
+        app:layout_constraintStart_toStartOf="@id/popup_add_task_pick_date_static_text"
+        android:layout_marginTop="@dimen/vert_medium"
+        android:paddingStart="@dimen/hori_medium"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

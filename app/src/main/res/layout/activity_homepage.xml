@@ -1,61 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePage"
-    android:background="@color/backgroundPrimary">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/backgroundPrimary"
+    android:fitsSystemWindows="true"
+    >
 
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/homepage_toolbar"
+    <LinearLayout
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:titleTextAppearance="@style/toolbar_homepage_title_text_appearance"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_height="match_parent"
+        tools:context=".HomePage">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homepage_persistent_todo_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@+id/homepage_toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/hori_large"
-        android:layout_marginEnd="@dimen/hori_large"
-        android:layout_marginTop="@dimen/vert_medium"/>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/homepage_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:titleTextAppearance="@style/toolbar_homepage_title_text_appearance" />
 
 
-    <View
-        android:id="@+id/homepage_list_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/greyish_blue"
-        app:layout_constraintTop_toBottomOf="@id/homepage_persistent_todo_recycler"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/hori_extra_large"
-        android:layout_marginEnd="@dimen/hori_extra_large"
-        android:layout_marginTop="@dimen/vert_large"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homepage_persistent_todo_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/hori_medium"
+            android:layout_marginTop="@dimen/vert_medium"
+            android:layout_marginEnd="@dimen/hori_medium"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/homepage_toolbar" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homepage_dynamic_todo_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/backgroundPrimary"
-        app:layout_constraintTop_toBottomOf="@id/homepage_list_divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/hori_large"
-        android:layout_marginEnd="@dimen/hori_large"
-        android:layout_marginTop="@dimen/vert_large"/>
+        <View
+            android:id="@+id/homepage_list_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/hori_extra_large"
+            android:layout_marginTop="@dimen/vert_large"
+            android:layout_marginEnd="@dimen/hori_extra_large"
+            android:background="@color/greyish_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homepage_persistent_todo_recycler" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homepage_dynamic_todo_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/hori_medium"
+            android:layout_marginTop="@dimen/vert_large"
+            android:layout_marginEnd="@dimen/hori_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homepage_list_divider" />
+
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

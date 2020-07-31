@@ -1,8 +1,27 @@
 <resources>
 
+    <style name="globalTheme" parent="Theme.AppCompat.NoActionBar">
+
+        <item name="android:statusBarColor">@color/transparent</item>
+
+    </style>
+
     <style name="toolbar_homepage_title_text_appearance" parent="@style/Base.TextAppearance.AppCompat.Title">
-        <item name="android:textSize">27dp</item>
+        <item name="android:textSize">27sp</item>
         <item name="android:textColor">@color/light_gray</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+
+    <style name="collapsing_toolbar_title_text_expanded" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="collapsing_toolbar_title_text_collapsed" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">27sp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:letterSpacing">0.05</item>
     </style>
 

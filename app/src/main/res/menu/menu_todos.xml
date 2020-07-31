@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        app:showAsAction="always"
+        android:id="@+id/btnMenu_list_options"
+        android:visible="true">
+
+        <item android:id="@+id/todos_change_theme"
+            android:title="Change Theme"/>
+
+        <item android:id="@+id/todos_delete_list"
+            android:title="Delete List"/>
+
+    </group>
+
+</menu>

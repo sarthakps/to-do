@@ -3,5 +3,7 @@
 
     <string name="empty_group_placeholder">There\'s nothing here!</string>
     <string name="add_username_hint">enter your username...</string>
+    <string name="add_list_static">Add List</string>
+    <string name="add_new_list_hint">Enter List Name</string>
 
 </resources>

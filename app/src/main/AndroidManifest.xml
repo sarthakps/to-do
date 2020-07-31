@@ -8,9 +8,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".HomePage"></activity>
-        <activity android:name=".AddUsername"
+        android:theme="@style/globalTheme">
+        <activity android:name=".DueToday"></activity>
+        <activity
+            android:name=".ListActivity"
+            android:theme="@style/globalTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".HomePage"
+            android:theme="@style/globalTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".AddUsername"
+            android:theme="@style/globalTheme"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

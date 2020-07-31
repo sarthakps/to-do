@@ -42,7 +42,7 @@ public class AddUsername extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("user_data", MODE_PRIVATE);
         String username = "";
-        if(!prefs.getString("username", null).equals(null)){
+        if(!prefs.getString("username", "").equals("")){
             Intent intent = new Intent(AddUsername.this, HomePage.class);
             startActivity(intent);
             finish();

@@ -6,7 +6,6 @@ public class ListObject {
     private int icon;
     private String name;
     private boolean isGroup = false;
-    private boolean isPersistent = false;
     private boolean isExpanded = false;
 
 

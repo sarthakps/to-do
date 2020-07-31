@@ -4,17 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/backgroundPrimary">
+    android:background="@drawable/ripple_effect_rectangle"
+    android:focusable="true"
+    android:clickable="true">
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/list_todo_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/backgroundPrimary"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="true"
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/list_todo_icon"
@@ -25,13 +28,14 @@
             android:paddingTop="10dp"
             android:paddingEnd="8dp"
             android:paddingBottom="10dp"
-            android:src="@drawable/temp_icon" />
+            android:src="@drawable/temp_icon"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/list_todo_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.85"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:text="Workspace Todo"
             android:textColor="@color/textPrimaryBright"
@@ -75,7 +79,6 @@
         android:id="@+id/list_todo_expandable_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/backgroundPrimary"
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,7 +99,7 @@
             android:textSize="@dimen/text_medium"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
-            android:layout_marginStart="@dimen/hori_large"/>
+            android:layout_marginStart="@dimen/hori_medium"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_todo_expanded_list"

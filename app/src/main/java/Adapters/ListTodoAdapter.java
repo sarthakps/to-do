@@ -1,16 +1,22 @@
 package Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todo.DueToday;
+import com.example.todo.ListActivity;
 import com.example.todo.R;
 
 import java.util.List;
@@ -32,11 +38,47 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(resource, parent, false));
+        View view = LayoutInflater.from(context).inflate(resource, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (list.get(position).getId() == -200) {
+                    //Today Activity Intent
+                    Intent intent = new Intent(context, DueToday.class);
+                    Activity activity = (Activity) context;
+                    activity.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
+                }
+
+                else if (list.get(position).getId() == -400) {
+                    //Important Activity Intent
+
+                }
+
+                else {
+                    Activity activity = (Activity) context;
+                    Intent intent = new Intent(context, ListActivity.class);
+                    intent.putExtra("title", list.get(position).getName());
+                    intent.putExtra("ID", list.get(position).getId());
+                    activity.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
+                }
+
+            }
+        });
+
+        holder.name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.view.performClick();
+            }
+        });
 
         ListObject item = list.get(position);
 
@@ -84,8 +126,9 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
         return list.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
+        private View view;
         private ImageView icon, ADD, EXPAND;
         private TextView name, testText;
         private RecyclerView recyclerView;
@@ -93,7 +136,7 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
 
         public ViewHolder(@NonNull View view) {
             super(view);
-//            this.testText = view.findViewById(R.id.textTest);
+            this.view = view;
             this.ADD = view.findViewById(R.id.list_todo_add_ListUnderGroup);
             this.EXPAND = view.findViewById(R.id.list_todo_btn_expand_group);
             this.icon = view.findViewById(R.id.list_todo_icon);
