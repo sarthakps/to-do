@@ -45,6 +45,8 @@ public class ThemeChangerAdapter extends RecyclerView.Adapter<ThemeChangerAdapte
 
         if(images.get(position).isSelected()){
             holder.isSelectedRadio.setVisibility(View.VISIBLE);
+        } else {
+            holder.isSelectedRadio.setVisibility(View.GONE);
         }
 
         holder.image.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +60,7 @@ public class ThemeChangerAdapter extends RecyclerView.Adapter<ThemeChangerAdapte
                 images.get(position).setSelected(true);
                 ListActivity.setBackground(images.get(position).getImageRes());
                 holder.isSelectedRadio.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
+                notifyItemChanged(selectedPosition);
 
                 updateThemeInDatabase(position);
             }
@@ -75,7 +77,7 @@ public class ThemeChangerAdapter extends RecyclerView.Adapter<ThemeChangerAdapte
             if(images.get(i).getImageRes() == themeRes){
                 images.get(i).setSelected(true);
                 selectedPosition = i;
-                notifyDataSetChanged();
+                notifyItemChanged(i);
                 return i;
             }
         }

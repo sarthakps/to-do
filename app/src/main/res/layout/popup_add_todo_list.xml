@@ -39,6 +39,7 @@
             android:layout_height="match_parent"
             android:backgroundTint="@color/accentPrimary"
             android:hint="@string/add_new_list_hint"
+            android:inputType="textCapSentences"
             android:textColorHint="@color/textPrimary"
             android:textColor="@color/textPrimary"/>
 

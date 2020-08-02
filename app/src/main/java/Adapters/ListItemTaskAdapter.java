@@ -2,9 +2,12 @@ package Adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,29 +51,53 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
         holder.isFinishedCheckbox.setOnCheckedChangeListener(new AnimCheckBox.OnCheckedChangeListener() {
             @Override
             public void onChange(AnimCheckBox view, boolean checked) {
-                if(checked){
+                if (checked) {
                     holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     task.setTaskFinished(true);
                     db.updateTaskToFinished(task.getID());
                 } else {
-                    holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                     task.setTaskFinished(false);
                     db.updateTaskToUnfinished(task.getID());
                 }
             }
         });
 
-        if(task.getDay() != 0){
-            holder.dueDateTime.setText(task.getMonthNameFormattedDate() + ", " + task.get12hrTimeWithAmPm());
+        holder.isImportantCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    task.setMarkedImportant(false);
+                    db.updateTaskToImportant(task.getID());
+                } else {
+                    task.setMarkedImportant(false);
+                    db.updateTaskToNotImportant(task.getID());
+                }
+            }
+        });
+
+        if (task.getDay() != 0) {
+            if (task.getMonthNameFormattedDate().equals("Today"))
+                holder.dueDateTime.setTextColor(context.getColor(R.color.redBright));
+            else if (task.getMonthNameFormattedDate().equals("Tomorrow"))
+                holder.dueDateTime.setTextColor(context.getColor(R.color.orange));
+
+            holder.dueDateTime.setText(task.getMonthNameFormattedDate() + "  " + task.get12hrTimeWithAmPm());
             holder.dueDateTime.setVisibility(View.VISIBLE);
         }
 
-        if(task.isTaskFinished()){
+        if (task.isTaskFinished()) {
             holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.isFinishedCheckbox.setChecked(true, false);
         } else {
-            holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             holder.isFinishedCheckbox.setChecked(false, false);
+        }
+
+        if (task.isMarkedImportant()){
+            holder.isImportantCheckbox.setChecked(true);
+        } else {
+            holder.isImportantCheckbox.setChecked(false);
         }
     }
 
@@ -83,14 +110,16 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
 
         AnimCheckBox isFinishedCheckbox;
         TextView taskDescription, dueDateTime;
+        CheckBox isImportantCheckbox;
 
-       public ViewHolder(@NonNull View view) {
-           super(view);
+        public ViewHolder(@NonNull View view) {
+            super(view);
 
-           isFinishedCheckbox = view.findViewById(R.id.item_todos_checkbox);
-           taskDescription = view.findViewById(R.id.item_todos_task);
-           dueDateTime = view.findViewById(R.id.item_todos_dueDateTime);
-       }
-   }
+            isFinishedCheckbox = view.findViewById(R.id.item_todos_checkbox);
+            taskDescription = view.findViewById(R.id.item_todos_task);
+            dueDateTime = view.findViewById(R.id.item_todos_dueDateTime);
+            isImportantCheckbox = view.findViewById(R.id.item_todos_star);
+        }
+    }
 
 }

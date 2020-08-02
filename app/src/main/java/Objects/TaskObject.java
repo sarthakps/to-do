@@ -2,6 +2,7 @@ package Objects;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TaskObject {
 
@@ -9,13 +10,14 @@ public class TaskObject {
     boolean isTaskFinished;
     boolean isMarkedImportant;
     boolean hasDueDate;
-    int day, month, year, hour, minute;
+    int day, month, year, hour, minute;     //month is indexed from 1   i.e. 1-12
     String taskDescription;
 
     public TaskObject(String taskDescription, boolean isTaskFinished, boolean hasDueDate){
         this.taskDescription = taskDescription;
         this.isTaskFinished = isTaskFinished;
         this.hasDueDate = hasDueDate;
+        day = month = year = hour = minute = 0;
     }
 
     public void setDateTime(int day, int month, int year, int hour, int minute){
@@ -27,11 +29,19 @@ public class TaskObject {
     }
 
     public String getMonthNameFormattedDate(){
-        Calendar cal=Calendar.getInstance();
-        cal.set(Calendar.MONTH, getMonth());
-        String month_name = new SimpleDateFormat("MMMM").format(cal.getTime());
+        String[] months = {"January","February","March", "April", "May", "June", "July",
+                            "August", "September", "October", "November", "December"};
 
-        return getDay() + " " + month_name;
+        Calendar c = Calendar.getInstance();
+
+        if(c.get(Calendar.DAY_OF_MONTH)==day && (c.get(Calendar.MONTH) + 1)==month && c.get(Calendar.YEAR)==year)
+            return "Today";
+
+        c.add(Calendar.DAY_OF_YEAR, 1);
+        if(c.get(Calendar.DAY_OF_MONTH)==day && (c.get(Calendar.MONTH) + 1)==month && c.get(Calendar.YEAR)==year)
+            return "Tomorrow";
+
+        return day + " " + months[month - 1];
     }
 
     public String get12hrTimeWithAmPm(){
@@ -56,6 +66,18 @@ public class TaskObject {
             return tempHour + ":0" + getMinute() + " " + am_pm;
         }
 
+    }
+
+    public Calendar getCalendar(){
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+
+        return calendar;
     }
 
     public void setDate(String date){

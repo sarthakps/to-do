@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -34,14 +35,14 @@ public class HomePage extends AppCompatActivity {
     private Toolbar toolbar;
     private static Context staticContext;
 
-    private List<ListObject> persistentList;
-    private List<ListObject> dynamicList;
+    private static List<ListObject> persistentList;
+    private static List<ListObject> dynamicList;
 
     private RecyclerView persistentRecycler;    //pre-loaded list recycler
     private RecyclerView dynamicRecycler;       //user added list recycler
 
     private ListTodoAdapter persistentAdapter;
-    private ListTodoAdapter dynamicAdapter;
+    private static ListTodoAdapter dynamicAdapter;
 
 
     public static String SelectedIcon;
@@ -97,6 +98,7 @@ public class HomePage extends AppCompatActivity {
         //setup dynamic list's recycler
         dynamicRecycler = findViewById(R.id.homepage_dynamic_todo_recycler);
         dynamicRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this));
+        new ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(dynamicRecycler);
 
         //adapter for persistent list
         persistentAdapter = new ListTodoAdapter(HomePage.this, R.layout.list_todo, persistentList);
@@ -123,7 +125,7 @@ public class HomePage extends AppCompatActivity {
         //setting up THEME RecyclerView
         RecyclerView themeRecycler = view.findViewById(R.id.popup_addList_theme_recycler);
         themeRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this, LinearLayoutManager.HORIZONTAL, false));
-        ( (SimpleItemAnimator) themeRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) themeRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
 
 
         //THEME recycler caching
@@ -136,7 +138,7 @@ public class HomePage extends AppCompatActivity {
         //setting up ICON RecyclerView
         RecyclerView iconRecycler = view.findViewById(R.id.popup_addList_icon_recycler);
         iconRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this, LinearLayoutManager.HORIZONTAL, false));
-        ( (SimpleItemAnimator) iconRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) iconRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
 
 
         //Theme Recycler ADAPTER
@@ -161,7 +163,7 @@ public class HomePage extends AppCompatActivity {
         view.findViewById(R.id.popup_addList_done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!listName.getText().toString().equals("")){
+                if (!listName.getText().toString().equals("")) {
                     //add list to database
                     DatabaseManager db = new DatabaseManager(HomePage.this);
                     int id = db.AddListToDB(listName.getText().toString().trim(), SelectedIcon, getResources().getResourceName(SelectedTheme), false);
@@ -177,13 +179,13 @@ public class HomePage extends AppCompatActivity {
     }
 
 
-    public static void setSelectedIcon(String iconName){
+    public static void setSelectedIcon(String iconName) {
         selectedIconImage.setImageResource(staticContext.getResources().getIdentifier(iconName, "drawable", staticContext.getPackageName()));
         SelectedIcon = iconName;
     }
 
 
-    public static void setSelectedTheme(int themeRes){
+    public static void setSelectedTheme(int themeRes) {
         SelectedTheme = themeRes;
     }
 
@@ -191,7 +193,8 @@ public class HomePage extends AppCompatActivity {
     private void loadFromDB() {
         //load persistent list
         persistentList.add(new ListObject(-200, "Today", R.drawable.icon_today, false));
-        persistentList.add(new ListObject(-400, "Important", R.drawable.icon_star, false));
+        persistentList.add(new ListObject(-400, "Tomorrow", R.drawable.icon_tomorrow, false));
+        persistentList.add(new ListObject(-600, "Important", R.drawable.icon_star, false));
         persistentAdapter.notifyDataSetChanged();
 
         //load user added lists
@@ -199,11 +202,49 @@ public class HomePage extends AppCompatActivity {
         Cursor res = db.getAllLists();
 
         ListObject object;
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             object = new ListObject(res.getInt(0), res.getString(1), getResources().getIdentifier(res.getString(2), "drawable", getPackageName()), Boolean.parseBoolean(res.getInt(4) + ""));
             dynamicList.add(object);
         }
         dynamicAdapter.notifyDataSetChanged();
     }
+
+    //refresh titles
+    public static void refreshTitle(int ID, String newTitle) {
+        for (int i = 0; i < dynamicList.size(); i++) {
+            if (dynamicList.get(i).getId() == ID) {
+                dynamicList.get(i).setName(newTitle);
+                dynamicAdapter.notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+    //remove deleted list
+    public static void listDeleted(int ID){
+        for (int i = 0; i < dynamicList.size(); i++) {
+            if (dynamicList.get(i).getId() == ID) {
+                dynamicList.remove(i);
+                dynamicAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
+
+    private ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            DatabaseManager db = new DatabaseManager(getBaseContext());
+            // remove list from database
+            db.removeListAndChildTasks(dynamicList.get(viewHolder.getAdapterPosition()).getId());
+            dynamicList.remove(viewHolder.getAdapterPosition());
+            dynamicAdapter.notifyItemRemoved(viewHolder.getPosition());
+        }
+    };
 
 }

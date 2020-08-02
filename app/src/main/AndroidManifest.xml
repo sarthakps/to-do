@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/globalTheme">
-        <activity android:name=".DueToday"></activity>
+        <activity android:name=".ImportantTasks"></activity>
+        <activity android:name=".DueTomorrow" />
+        <activity android:name=".DueToday" />
         <activity
             android:name=".ListActivity"
             android:theme="@style/globalTheme"
@@ -28,6 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name="AlarmHelpers.AlarmReceiver"/>
+        <receiver android:name="AlarmHelpers.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -12,13 +12,7 @@ import androidx.annotation.Nullable;
 
 import Objects.ListObject;
 
-public class DatabaseManager extends SQLiteOpenHelper {
-
-    public static final int VERSION = 1;
-    public static final String DATABASE_NAME = "todo.db";
-    public static final String LISTS_TABLE = "lists";
-    public static final String TASKS_TABLE = "todo";
-
+public class DatabaseManager extends SQLiteOpenHelper implements BaseDatabase{
 
     public DatabaseManager(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -27,10 +21,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + LISTS_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT,ICON TEXT,THEME TEXT,ISGROUP INTEGER DEFAULT 0)");
-        db.execSQL("create table " + TASKS_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,DESCRIPTION TEXT,ISFINISHED INTEGER,PARENTID INTEGER,DUEDATE TEXT,DUETIME TEXT)");
+        db.execSQL("create table " + LISTS_TABLE +
+                    " (ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "NAME TEXT," +
+                    "ICON TEXT," +
+                    "THEME TEXT," +
+                    "ISGROUP INTEGER DEFAULT 0)");
+        db.execSQL("create table " + TASKS_TABLE +
+                    " (ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "DESCRIPTION TEXT," +
+                    "ISFINISHED INTEGER," +
+                    "PARENTID INTEGER," +
+                    "DUEDATE TEXT," +
+                    "DUETIME TEXT," +
+                    "ISIMPORTANT INTEGER DEFAULT 0)");
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -58,7 +63,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return ID;
     }
 
-    public int AddTaskToDatabase(String taskDescription, boolean isFinished, int parentID, String dueDate, String dueTime){
+    public int AddTaskToDatabase(String taskDescription, boolean isFinished, int parentID, String dueDate, String dueTime) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -78,50 +83,75 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return ID;
     }
 
-    public Cursor getAllLists(){
+    public Cursor getAllLists() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from " + LISTS_TABLE, null);
     }
 
-    public Cursor getAllTasksUnderList(int parentID){
+    public Cursor getAllTasksUnderList(int parentID) {
         return this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE PARENTID = " + parentID, null);
     }
 
-    public Cursor getTasksDueToday(String date){
-        Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE DUEDATE = ?", new String[] { date });
-        return cursor;
+    public Cursor getTasksDueToday(String date) {
+        return this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE DUEDATE = ?", new String[]{date});
     }
 
-    public void removeTask(int ID){
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(TASKS_TABLE, "ID = " + ID, null);
+    public Cursor getImportantTasks() {
+        return this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE ISIMPORTANT=? AND ISFINISHED=?", new String[] {"1", "0"});
     }
 
-    public void updateTaskToFinished(int ID){
+    public void removeTask(int ID) {
+        this.getWritableDatabase().delete(TASKS_TABLE, "ID = " + ID, null);
+    }
+
+    public void removeListAndChildTasks(int ID) {
+        this.getWritableDatabase().delete(LISTS_TABLE, "ID = " + ID, null);
+        this.getWritableDatabase().delete(TASKS_TABLE, "PARENTID = " + ID, null);
+    }
+
+    public void updateTaskToFinished(int ID) {
         ContentValues values = new ContentValues();
         values.put("ISFINISHED", 1);
 
         this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
     }
 
-    public void updateTaskToUnfinished(int ID){
+    public void updateTaskToUnfinished(int ID) {
         ContentValues values = new ContentValues();
         values.put("ISFINISHED", 0);
 
         this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
     }
 
-    public String getListTheme(int id){
+    public void updateTaskToImportant(int ID) {
+        ContentValues values = new ContentValues();
+        values.put("ISIMPORTANT", 1);
+
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
+    }
+
+    public void updateTaskToNotImportant(int ID) {
+        ContentValues values = new ContentValues();
+        values.put("ISIMPORTANT", 0);
+
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
+    }
+
+    public String getListTheme(int id) {
         Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + LISTS_TABLE + " WHERE ID = " + id, null);
         cursor.moveToNext();
         return cursor.getString(3);
     }
 
-    public void updateTheme(int ID, String themeName){
+    public void updateTheme(int ID, String themeName) {
         ContentValues values = new ContentValues();
         values.put("THEME", themeName);
+        this.getWritableDatabase().update(LISTS_TABLE, values, "ID = " + ID, null);
+    }
 
-        Log.e("sq theme update", ID + "   " + themeName);
+    public void renameList(int ID, String title) {
+        ContentValues values = new ContentValues();
+        values.put("NAME", title);
         this.getWritableDatabase().update(LISTS_TABLE, values, "ID = " + ID, null);
     }
 

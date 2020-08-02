@@ -22,7 +22,7 @@ import Adapters.ListItemTaskAdapter;
 import Database.DatabaseManager;
 import Objects.TaskObject;
 
-public class DueToday extends AppCompatActivity {
+public class ImportantTasks extends AppCompatActivity {
 
     List<TaskObject> tasksList;
 
@@ -32,7 +32,7 @@ public class DueToday extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_due_today);
+        setContentView(R.layout.activity_important_tasks);
 
         assignUIcomponents();
 
@@ -42,7 +42,7 @@ public class DueToday extends AppCompatActivity {
     private void assignUIcomponents() {
         tasksList = new ArrayList<>();
 
-        tasksRecycler = findViewById(R.id.dueToday_tasks_recycler);
+        tasksRecycler = findViewById(R.id.impTasks_tasks_recycler);
         tasksRecycler.setLayoutManager(new LinearLayoutManager(getBaseContext(), RecyclerView.VERTICAL, false));
 
         tasksAdapter = new ListItemTaskAdapter(getBaseContext(), R.layout.item_task, tasksList);
@@ -62,7 +62,7 @@ public class DueToday extends AppCompatActivity {
         Toast.makeText(getBaseContext(), date, Toast.LENGTH_SHORT).show();
 
         DatabaseManager db = new DatabaseManager(getApplicationContext());
-        Cursor cursor = db.getTasksDueToday(date);
+        Cursor cursor = db.getImportantTasks();
 
         TaskObject task;
 
@@ -72,18 +72,16 @@ public class DueToday extends AppCompatActivity {
                 task = new TaskObject(cursor.getString(1), "1".equals(cursor.getString(2)), "1".equals(cursor.getString(4)));
                 task.setID(cursor.getInt(0));
                 task.setMarkedImportant("1".equals(cursor.getString(6)));
-                task.setDate("0");
-                task.setTime("0");
+                task.setDate(cursor.getString(4));
+                task.setTime(cursor.getString(5));
                 tasksList.add(task);
-                Log.e("LOOPING", "123456...");
             }
             while (cursor.moveToNext());
         }
 
         Log.e("tasks size", "today_size: " + tasksList.size());
         if (tasksList.size() > 0) {
-            findViewById(R.id.dueToday_hooray).setVisibility(View.GONE);
-            findViewById(R.id.dueToday_no_due_today_static_text).setVisibility(View.GONE);
+            findViewById(R.id.impTasks_no_imp_tasks_static_text).setVisibility(View.GONE);
             tasksAdapter.notifyDataSetChanged();
         }
     }

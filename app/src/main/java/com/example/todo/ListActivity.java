@@ -11,10 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -30,9 +36,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
+import java.nio.channels.CancelledKeyException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,9 +49,12 @@ import java.util.List;
 
 import Adapters.ListItemTaskAdapter;
 import Adapters.ThemeChangerAdapter;
+import AlarmHelpers.AlarmReceiver;
+import Database.AlarmDatabaseHelper;
 import Database.DatabaseManager;
 import Objects.ConstantsDB;
 import Objects.ListObject;
+import Objects.Reminder;
 import Objects.TaskObject;
 
 public class ListActivity extends AppCompatActivity {
@@ -51,13 +62,13 @@ public class ListActivity extends AppCompatActivity {
     private Intent intent;
     private View view_change_theme, view_add_task;
     static ConstraintLayout parentLayout;
-
+    Toolbar toolbar;
+    CollapsingToolbarLayout collapsingToolbar;
 
     private RecyclerView tasksRecycler;
     private ListItemTaskAdapter tasksListAdapter;
 
     private static ImageView parentBackground;
-    private Button addTaskFloatingBtn;
 
     private static int themeRes, ID;
     private List<TaskObject> taskObjectList = new ArrayList<>();
@@ -78,6 +89,8 @@ public class ListActivity extends AppCompatActivity {
         ID = intent.getIntExtra("ID", 1);
 
         assignUIcomponents();
+
+        loadTasksFromDatabase();
     }
 
 
@@ -89,24 +102,34 @@ public class ListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.todos_change_theme:
                 change_theme_popup();
+                break;
+
+            case R.id.todos_rename_list:
+                rename_list_popup();
+                break;
+
+            case R.id.todos_delete_list:
+                new DatabaseManager(getBaseContext()).removeListAndChildTasks(ID);
+                HomePage.listDeleted(ID);
+                finish();
                 break;
         }
         return true;
     }
 
     private void assignUIcomponents() {
-        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.todos_collapsing_toolbar);
+        collapsingToolbar = findViewById(R.id.todos_collapsing_toolbar);
 
-        Toolbar toolbar = findViewById(R.id.todos_toolbar);
+        toolbar = findViewById(R.id.todos_toolbar);
         setSupportActionBar(toolbar);
 
         collapsingToolbar.setTitleEnabled(true);
         collapsingToolbar.setTitle(intent.getStringExtra("title"));
 
-        //load theme name from database using ID from intentExtra and set it as background
+        // load theme name from database using ID from intentExtra and set it as background
         DatabaseManager db = new DatabaseManager(ListActivity.this);
         String theme = db.getListTheme(ID);
         themeRes = getResources().getIdentifier(theme, "drawable", getApplicationContext().getPackageName());
@@ -121,29 +144,27 @@ public class ListActivity extends AppCompatActivity {
             }
         });
 
-        //setup Recycler View
+        // setup Recycler View
         tasksRecycler = findViewById(R.id.todos_tasks_recycler);
         tasksRecycler.setLayoutManager(new LinearLayoutManager(getBaseContext(), RecyclerView.VERTICAL, false));
 
-        //setup Adapter for Recycler View
+        // setup Adapter for Recycler View
         tasksListAdapter = new ListItemTaskAdapter(getBaseContext(), R.layout.item_task, taskObjectList);
         tasksRecycler.setAdapter(tasksListAdapter);
 
-        //swipe to delete for Recycler View
+        // swipe to delete for Recycler View
         new ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(tasksRecycler);
-
-        loadTasksFromDatabase();
     }
 
-    private void loadTasksFromDatabase(){
+    private void loadTasksFromDatabase() {
         DatabaseManager db = new DatabaseManager(getBaseContext());
         Cursor cursor = db.getAllTasksUnderList(ID);
 
         TaskObject task;
 
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             task = new TaskObject(cursor.getString(1), "1".equals(cursor.getString(2)), "1".equals(cursor.getString(4)));
-            Log.e("DEBUG", cursor.getString(2));
+            task.setMarkedImportant("1".equals(cursor.getString(6)));
             task.setID(cursor.getInt(0));
             task.setDate(cursor.getString(4));
             task.setTime(cursor.getString(5));
@@ -153,7 +174,7 @@ public class ListActivity extends AppCompatActivity {
         tasksListAdapter.notifyDataSetChanged();
     }
 
-    public void change_theme_popup(){
+    public void change_theme_popup() {
         view_change_theme = LayoutInflater.from(ListActivity.this).inflate(R.layout.popup_theme_change, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
@@ -170,7 +191,7 @@ public class ListActivity extends AppCompatActivity {
 
         RecyclerView themeChangeRecycler = view_change_theme.findViewById(R.id.list_theme_change_recycler);
         themeChangeRecycler.setLayoutManager(new LinearLayoutManager(ListActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        ( (SimpleItemAnimator) themeChangeRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) themeChangeRecycler.getItemAnimator()).setSupportsChangeAnimations(false);
 
         themeChangeRecycler.setHasFixedSize(true);
         themeChangeRecycler.setItemViewCacheSize(40);
@@ -188,7 +209,7 @@ public class ListActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void add_task_popup(){
+    public void add_task_popup() {
         view_add_task = LayoutInflater.from(ListActivity.this).inflate(R.layout.popup_add_todo_task, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
@@ -243,7 +264,7 @@ public class ListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void date_time_popup(final TextView dateTimeTextView, final TextView clearDueDate){
+    private void date_time_popup(final TextView dateTimeTextView, final TextView clearDueDate) {
         final View view_datetime_popup = LayoutInflater.from(ListActivity.this).inflate(R.layout.date_time_picker, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
@@ -257,16 +278,8 @@ public class ListActivity extends AppCompatActivity {
         view_datetime_popup.findViewById(R.id.popup_datetime_tomorrow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                 Calendar c = Calendar.getInstance();
-                try {
-                    c.setTime(sdf.parse(c.get(Calendar.DAY_OF_MONTH) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.YEAR)));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                c.add(Calendar.DATE, 1);
-
+                c.add(Calendar.DAY_OF_YEAR, 1);
                 datePicker.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             }
         });
@@ -308,14 +321,14 @@ public class ListActivity extends AppCompatActivity {
                 date = day + "-" + month + "-" + year;
                 time = hour + ":" + minute;
 
-                if(hour > 11){
+                if (hour > 11) {
                     hour -= 12;
                 }
 
-                if(minute > 9){
-                    dateTimeTextView.setText( day + "-" + month + "-" + year + "  " + hour + ":" + minute + " " + am_pm);
+                if (minute > 9) {
+                    dateTimeTextView.setText(day + "-" + month + "-" + year + "  " + hour + ":" + minute + " " + am_pm);
                 } else {
-                    dateTimeTextView.setText( day + "-" + month + "-" + year + "  " + hour + ":" + "0" + minute + " " + am_pm);
+                    dateTimeTextView.setText(day + "-" + month + "-" + year + "  " + hour + ":" + "0" + minute + " " + am_pm);
                 }
 
                 clearDueDate.setVisibility(View.VISIBLE);
@@ -327,40 +340,105 @@ public class ListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void add_task_to_database(String taskDescription){
-        if(!taskDescription.isEmpty()){
-                TaskObject task = new TaskObject(taskDescription, Boolean.parseBoolean(date), Boolean.parseBoolean(time));
+    private void rename_list_popup() {
 
-                String[] dateData = date.split("-");
-                String[] timeData = time.split(":");
+        final String currentTitle = collapsingToolbar.getTitle().toString();
 
-                if(dateData.length > 1){
-                    task.setDay(Integer.parseInt(dateData[0]));
-                    task.setMonth(Integer.parseInt(dateData[1]));
-                    task.setYear(Integer.parseInt(dateData[2]));
+        View view_rename_list = LayoutInflater.from(getBaseContext()).inflate(R.layout.popup_rename_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
+        builder.setView(view_rename_list);
+
+        AlertDialog alertDialog = builder.create();
+
+        final EditText renameList = view_rename_list.findViewById(R.id.popup_rename_list_edittext);
+        renameList.setText(currentTitle);
+
+        renameList.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                collapsingToolbar.setTitle(s.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        alertDialog.show();
+
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (renameList.getText().equals("")) {
+                    collapsingToolbar.setTitle(currentTitle);
+                } else if (renameList.getText().toString().trim().equals(currentTitle)) {
+                    //do nothing
+                } else {
+                    //update new title in database
+                    DatabaseManager db = new DatabaseManager(getBaseContext());
+                    db.renameList(ID, renameList.getText().toString().trim());
+                    db.close();
+                    HomePage.refreshTitle(ID, renameList.getText().toString().trim());
                 }
-
-                if(timeData.length > 1){
-                    task.setHour(Integer.parseInt(timeData[0]));
-                    task.setMinute(Integer.parseInt(timeData[1]));
-                }
-
-                DatabaseManager db = new DatabaseManager(getBaseContext());
-                int taskID = db.AddTaskToDatabase(taskDescription, false, ID, date, time);
-
-                task.setID(taskID);
-
-                taskObjectList.add(task);
-                tasksListAdapter.notifyDataSetChanged();
-        }
+            }
+        });
     }
 
-    private void resetDateTimeGlobal(){
+    private void add_task_to_database(String taskDescription) {
+        if (!taskDescription.isEmpty()) {
+            TaskObject task = new TaskObject(taskDescription, Boolean.parseBoolean(date), Boolean.parseBoolean(time));
+
+            String[] dateData = date.split("-");
+            String[] timeData = time.split(":");
+
+            if (dateData.length > 1) {
+                task.setDay(Integer.parseInt(dateData[0]));
+                task.setMonth(Integer.parseInt(dateData[1]));
+                task.setYear(Integer.parseInt(dateData[2]));
+            }
+
+            if (timeData.length > 1) {
+                task.setHour(Integer.parseInt(timeData[0]));
+                task.setMinute(Integer.parseInt(timeData[1]));
+            }
+
+            DatabaseManager db = new DatabaseManager(getBaseContext());
+            int taskID = db.AddTaskToDatabase(taskDescription, false, ID, date, time);
+
+            task.setID(taskID);
+
+            taskObjectList.add(task);
+            tasksListAdapter.notifyItemInserted(taskObjectList.size() - 1);
+
+            setAlarm(task);
+        }
+
+        //reset global date-time variables to not interfere with consecutive next task being added
         date = "0";
         time = "0";
     }
 
-    public static void setBackground(int imageRes){
+    private void setAlarm(TaskObject task) {
+        AlarmDatabaseHelper rb = new AlarmDatabaseHelper(getBaseContext());
+        rb.addReminder(task);
+        Reminder reminder = new Reminder(task.getID(), task.getDay(), task.getMonth(), task.getYear(), task.getHour(), task.getMinute(), task.getTaskDescription());
+
+        new AlarmReceiver().setAlarm(getApplicationContext(), reminder);
+    }
+
+    private void resetDateTimeGlobal() {
+        date = "0";
+        time = "0";
+    }
+
+    public static void setBackground(int imageRes) {
         // parentLayout.setBackgroundResource(imageRes);
         themeRes = imageRes;
         parentBackground.setImageResource(imageRes);
@@ -377,7 +455,7 @@ public class ListActivity extends AppCompatActivity {
             DatabaseManager db = new DatabaseManager(getBaseContext());
             db.removeTask(taskObjectList.get(viewHolder.getAdapterPosition()).getID());
             taskObjectList.remove(viewHolder.getAdapterPosition());
-            tasksListAdapter.notifyDataSetChanged();
+            tasksListAdapter.notifyItemRemoved(viewHolder.getPosition());
         }
     };
 

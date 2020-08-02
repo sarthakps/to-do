@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,31 +13,32 @@
     android:gravity="center_vertical"
     android:minHeight="50dp"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/vert_small"
-    android:paddingBottom="@dimen/vert_small"
     android:paddingStart="@dimen/hori_medium"
-    android:paddingEnd="@dimen/hori_medium">
+    android:paddingTop="@dimen/vert_small"
+    android:paddingEnd="@dimen/hori_medium"
+    android:paddingBottom="@dimen/vert_small">
 
     <com.github.lguipeng.library.animcheckbox.AnimCheckBox
         android:id="@+id/item_todos_checkbox"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        app:checked="true"
         app:circle_color="@color/taskItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:checked="true"
         app:layout_constraintTop_toTopOf="parent"
         app:stroke_color="@color/white"
-        app:stroke_width="3dp"/>
+        app:stroke_width="3dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="@id/item_todos_checkbox"
-        app:layout_constraintBottom_toBottomOf="@id/item_todos_checkbox"
         android:layout_marginStart="@dimen/hori_medium"
-        app:layout_constraintStart_toEndOf="@id/item_todos_checkbox">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/item_todos_checkbox"
+        app:layout_constraintStart_toEndOf="@id/item_todos_checkbox"
+        app:layout_constraintTop_toTopOf="@id/item_todos_checkbox"
+        app:layout_constraintEnd_toStartOf="@id/item_todos_star">
 
         <TextView
             android:id="@+id/item_todos_task"
@@ -60,5 +62,16 @@
             app:layout_constraintTop_toBottomOf="@id/item_todos_task" />
 
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/item_todos_star"
+        android:layout_width="@dimen/btn_icon_large"
+        android:layout_height="@dimen/btn_icon_large"
+        android:button="@drawable/checkbox_star_light"
+        android:background="@drawable/ripple_effect"
+        android:checked="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

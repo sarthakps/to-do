@@ -22,7 +22,7 @@ import Adapters.ListItemTaskAdapter;
 import Database.DatabaseManager;
 import Objects.TaskObject;
 
-public class DueToday extends AppCompatActivity {
+public class DueTomorrow extends AppCompatActivity {
 
     List<TaskObject> tasksList;
 
@@ -32,7 +32,7 @@ public class DueToday extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_due_today);
+        setContentView(R.layout.activity_due_tomorrow);
 
         assignUIcomponents();
 
@@ -42,7 +42,7 @@ public class DueToday extends AppCompatActivity {
     private void assignUIcomponents() {
         tasksList = new ArrayList<>();
 
-        tasksRecycler = findViewById(R.id.dueToday_tasks_recycler);
+        tasksRecycler = findViewById(R.id.dueTomorrow_tasks_recycler);
         tasksRecycler.setLayoutManager(new LinearLayoutManager(getBaseContext(), RecyclerView.VERTICAL, false));
 
         tasksAdapter = new ListItemTaskAdapter(getBaseContext(), R.layout.item_task, tasksList);
@@ -55,9 +55,9 @@ public class DueToday extends AppCompatActivity {
 
         Calendar c = Calendar.getInstance();
 
-        int month = c.get(Calendar.MONTH) + 1;
+        c.add(Calendar.DAY_OF_YEAR, 1);
 
-        String date = c.get(Calendar.DAY_OF_MONTH) + "-" + month + "-" + c.get(Calendar.YEAR);
+        String date = c.get(Calendar.DAY_OF_MONTH) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.YEAR);
 
         Toast.makeText(getBaseContext(), date, Toast.LENGTH_SHORT).show();
 
@@ -82,8 +82,8 @@ public class DueToday extends AppCompatActivity {
 
         Log.e("tasks size", "today_size: " + tasksList.size());
         if (tasksList.size() > 0) {
-            findViewById(R.id.dueToday_hooray).setVisibility(View.GONE);
-            findViewById(R.id.dueToday_no_due_today_static_text).setVisibility(View.GONE);
+            findViewById(R.id.dueTomorrow_hooray).setVisibility(View.GONE);
+            findViewById(R.id.dueTomorrow_no_due_today_static_text).setVisibility(View.GONE);
             tasksAdapter.notifyDataSetChanged();
         }
     }
@@ -99,7 +99,7 @@ public class DueToday extends AppCompatActivity {
             DatabaseManager db = new DatabaseManager(getBaseContext());
             db.removeTask(tasksList.get(viewHolder.getAdapterPosition()).getID());
             tasksList.remove(viewHolder.getAdapterPosition());
-            tasksAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            tasksAdapter.notifyItemRemoved(viewHolder.getPosition());
         }
     };
 }

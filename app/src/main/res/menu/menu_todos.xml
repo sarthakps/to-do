@@ -7,6 +7,9 @@
         android:id="@+id/btnMenu_list_options"
         android:visible="true">
 
+        <item android:id="@+id/todos_rename_list"
+            android:title="Rename List"/>
+
         <item android:id="@+id/todos_change_theme"
             android:title="Change Theme"/>
 

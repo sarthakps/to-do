@@ -28,7 +28,7 @@
 
     <!-- BUTTON -->
     <dimen name="btn_icon_medium">24dp</dimen>
-    <dimen name="btn_icon_large">30dp</dimen>
+    <dimen name="btn_icon_large">32dp</dimen>
 
 
     <!-- ICON -->
