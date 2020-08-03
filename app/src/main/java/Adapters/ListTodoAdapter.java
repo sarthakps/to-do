@@ -23,6 +23,7 @@ import com.example.todo.R;
 
 import java.util.List;
 
+import Database.BaseDatabase;
 import Objects.ListObject;
 
 public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHolder> {
@@ -78,7 +79,7 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
                     Activity activity = (Activity) context;
                     Intent intent = new Intent(context, ListActivity.class);
                     intent.putExtra("title", list.get(position).getName());
-                    intent.putExtra("ID", list.get(position).getId());
+                    intent.putExtra(BaseDatabase.TASKS_ID, list.get(position).getId());
                     activity.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
                 }

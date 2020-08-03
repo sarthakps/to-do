@@ -16,4 +16,14 @@ public interface BaseDatabase {
     String REMINDERS_YEAR = "YEAR";
     String REMINDERS_HOUR = "HOUR";
     String REMINDERS_MINUTE = "MINUTE";
+
+    //Tasks table columns
+    String TASKS_ID = "ID";
+    String TASKS_PARENT_ID = "PARENTID";
+    String TASKS_DESCRIPTION = "DESCRIPTION";
+    String TASKS_DATE = "DATE";
+    String TASKS_TIME = "TIME";
+    String TASKS_IS_FINISHED = "ISFINISHED";
+    String TASKS_IS_IMPORTANT = "ISIMPORTANT";
+
 }

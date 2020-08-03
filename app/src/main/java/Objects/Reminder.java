@@ -15,6 +15,7 @@ public class Reminder {
         this.year = year;
         this.hour = hour;
         this.minute = minute;
+        this.taskDescription = taskDescription;
     }
 
     public Calendar getCalendar(){

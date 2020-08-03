@@ -28,7 +28,7 @@ public class BootReceiver extends BroadcastReceiver {
                 alarmReceiver.cancelAlarm(context, rm.getTaskID());
 
                 // Create a new notification
-                alarmReceiver.setAlarm(context, rm);
+                //alarmReceiver.setAlarm(context, rm);
             }
         }
     }

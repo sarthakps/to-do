@@ -3,13 +3,13 @@
   <component name="SQLAndroidSettings">
     <option name="databases">
       <map>
-        <entry key="wifi todo_C:\Users\sarth\AndroidStudioProjects\ToDo\AndroidSqlEditorDatabases\">
+        <entry key="todo cable_C:\Users\sarth\AndroidStudioProjects\ToDo\AndroidSqlEditorDatabases\">
           <value>
             <list>
-              <option value="192.168.1.13:5555" />
+              <option value="3538364142573098" />
               <option value="/databases/todo.db" />
-              <option value="wifi todo" />
-              <option value="wifi todo" />
+              <option value="todo cable" />
+              <option value="todo cable" />
               <option value="false" />
               <option value="com.example.todo" />
             </list>

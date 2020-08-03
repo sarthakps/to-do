@@ -51,6 +51,7 @@ import Adapters.ListItemTaskAdapter;
 import Adapters.ThemeChangerAdapter;
 import AlarmHelpers.AlarmReceiver;
 import Database.AlarmDatabaseHelper;
+import Database.BaseDatabase;
 import Database.DatabaseManager;
 import Objects.ConstantsDB;
 import Objects.ListObject;
@@ -86,7 +87,7 @@ public class ListActivity extends AppCompatActivity {
 
         intent = getIntent();
 
-        ID = intent.getIntExtra("ID", 1);
+        ID = intent.getIntExtra(BaseDatabase.TASKS_ID, 1);
 
         assignUIcomponents();
 
@@ -426,11 +427,10 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void setAlarm(TaskObject task) {
-        AlarmDatabaseHelper rb = new AlarmDatabaseHelper(getBaseContext());
-        rb.addReminder(task);
         Reminder reminder = new Reminder(task.getID(), task.getDay(), task.getMonth(), task.getYear(), task.getHour(), task.getMinute(), task.getTaskDescription());
 
-        new AlarmReceiver().setAlarm(getApplicationContext(), reminder);
+        new AlarmReceiver().setAlarm(getApplicationContext(), reminder, ID);
+        Log.e("NOTIF: ", "1");
     }
 
     private void resetDateTimeGlobal() {
@@ -454,6 +454,8 @@ public class ListActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             DatabaseManager db = new DatabaseManager(getBaseContext());
             db.removeTask(taskObjectList.get(viewHolder.getAdapterPosition()).getID());
+            db.close();
+            new AlarmReceiver().cancelAlarm(getBaseContext(), taskObjectList.get(viewHolder.getAdapterPosition()).getID());
             taskObjectList.remove(viewHolder.getAdapterPosition());
             tasksListAdapter.notifyItemRemoved(viewHolder.getPosition());
         }

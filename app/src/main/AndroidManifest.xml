@@ -30,12 +30,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--Notification Pending Alarm Receiver-->
         <receiver android:name="AlarmHelpers.AlarmReceiver"/>
+
+        <!--Notification Action Pending Alarm Receiver-->
+        <receiver android:name="AlarmHelpers.NotificationActionReceiver"/>
+
+        <!--Boot Completed Alarm Receiver-->
         <receiver android:name="AlarmHelpers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
