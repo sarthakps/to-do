@@ -7,6 +7,11 @@ public interface BaseDatabase {
     String TASKS_TABLE = "todo";
     String REMINDERS_TABLE = "reminders";
 
+    //Global Constants
+    int TODAY_ID = -200;
+    int TOMORROW_ID = -400;
+    int IMPORTANT_ID = -600;
+
     //Reminders table columns
     String REMINDERS_ID = "ID";
     String REMINDERS_TASK_ID = "TASKSID";
@@ -21,9 +26,10 @@ public interface BaseDatabase {
     String TASKS_ID = "ID";
     String TASKS_PARENT_ID = "PARENTID";
     String TASKS_DESCRIPTION = "DESCRIPTION";
-    String TASKS_DATE = "DATE";
-    String TASKS_TIME = "TIME";
+    String TASKS_DATE = "DUEDATE";
+    String TASKS_TIME = "DUETIME";
     String TASKS_IS_FINISHED = "ISFINISHED";
     String TASKS_IS_IMPORTANT = "ISIMPORTANT";
+    String TASKS_IS_NOTIF_PENDING = "ISNOTIFICATIONPENDING";
 
 }

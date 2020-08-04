@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notif_collapsed_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/hori_medium">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/notif_collapsed_icon"
+            android:layout_width="@dimen/btn_icon_medium"
+            android:layout_height="@dimen/btn_icon_medium"
+            android:src="@drawable/icon_alarm"/>
+
+        <TextView
+            android:id="@+id/notif_collapsed_package_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/hori_small"
+            android:text="To Do"
+            android:textColor="@color/accentPrimary"
+            android:textSize="@dimen/text_medium" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/notif_collapsed_task_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is the task that is due"
+        android:textColor="@color/textPrimary"
+        android:textSize="@dimen/text_medium" />
+
+    <TextView
+        android:id="@+id/notif_collapsed_list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Name"
+        android:textColor="@color/textPrimary"
+        android:textSize="@dimen/text_small" />
+
+</LinearLayout>

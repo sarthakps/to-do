@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.todo">
 
+    <uses-permission-sdk-23 android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/globalTheme">
-        <activity android:name=".ImportantTasks"></activity>
+        <activity android:name=".ImportantTasks" />
         <activity android:name=".DueTomorrow" />
         <activity android:name=".DueToday" />
         <activity
@@ -26,21 +28,21 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!--Notification Pending Alarm Receiver-->
-        <receiver android:name="AlarmHelpers.AlarmReceiver"/>
+        <receiver android:name="AlarmHelpers.AlarmReceiver" />
 
         <!--Notification Action Pending Alarm Receiver-->
-        <receiver android:name="AlarmHelpers.NotificationActionReceiver"/>
+        <receiver android:name="AlarmHelpers.NotificationActionReceiver" />
 
         <!--Boot Completed Alarm Receiver-->
-        <receiver android:name="AlarmHelpers.BootReceiver">
+        <receiver android:name="AlarmHelpers.BootReceiver"
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 

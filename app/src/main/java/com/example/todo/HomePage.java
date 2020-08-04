@@ -28,9 +28,11 @@ import java.util.List;
 import Adapters.IconSelectorAdapter;
 import Adapters.ListTodoAdapter;
 import Adapters.ThemeSelectorAdapter;
+import AlarmHelpers.AlarmReceiver;
 import Database.DatabaseManager;
 import Objects.ConstantsDB;
 import Objects.ListObject;
+import Objects.Reminder;
 import Objects.ThemeObject;
 
 public class HomePage extends AppCompatActivity {
@@ -64,13 +66,9 @@ public class HomePage extends AppCompatActivity {
 
         loadFromDB();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("Due Tasks", "Due Tasks", importance);
-            channel.setDescription("This is the channel description");
-            NotificationManager notificationManager = getApplicationContext().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        create_notification_channel();
+
+        set_daily_today_alarm();
     }
 
 
@@ -240,6 +238,21 @@ public class HomePage extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    //setup notification channel
+    private void create_notification_channel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("Due Tasks", "Due Tasks", importance);
+            NotificationManager notificationManager = getApplicationContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void set_daily_today_alarm(){
+        AlarmReceiver dailyAlarm = new AlarmReceiver();
+        dailyAlarm.setAlarm(getBaseContext(), new Reminder(), -200);
     }
 
     private ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {

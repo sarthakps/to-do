@@ -92,6 +92,22 @@ public class TaskObject {
         }
     }
 
+    public String getDate(){
+        if(day != 0){
+            return day + "-" + month + "-" + year;
+        }
+
+        return "0";
+    }
+
+    public String getTime(){
+        if(hour != 0){
+            return hour + ":" + minute;
+        }
+
+        return "0";
+    }
+
     public void setTime(String time){
         String[] timeArray = time.split(":");
 

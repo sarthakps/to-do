@@ -4,16 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,21 +23,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
-import java.nio.channels.CancelledKeyException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -50,11 +38,9 @@ import java.util.List;
 import Adapters.ListItemTaskAdapter;
 import Adapters.ThemeChangerAdapter;
 import AlarmHelpers.AlarmReceiver;
-import Database.AlarmDatabaseHelper;
 import Database.BaseDatabase;
 import Database.DatabaseManager;
 import Objects.ConstantsDB;
-import Objects.ListObject;
 import Objects.Reminder;
 import Objects.TaskObject;
 
@@ -62,7 +48,6 @@ public class ListActivity extends AppCompatActivity {
 
     private Intent intent;
     private View view_change_theme, view_add_task;
-    static ConstraintLayout parentLayout;
     Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbar;
 
@@ -71,7 +56,7 @@ public class ListActivity extends AppCompatActivity {
 
     private static ImageView parentBackground;
 
-    private static int themeRes, ID;
+    private static int themeRes, listID;
     private List<TaskObject> taskObjectList = new ArrayList<>();
     private static String date = "0", time = "0";
 
@@ -87,7 +72,7 @@ public class ListActivity extends AppCompatActivity {
 
         intent = getIntent();
 
-        ID = intent.getIntExtra(BaseDatabase.TASKS_ID, 1);
+        listID = intent.getIntExtra(BaseDatabase.TASKS_PARENT_ID, 1);
 
         assignUIcomponents();
 
@@ -113,8 +98,8 @@ public class ListActivity extends AppCompatActivity {
                 break;
 
             case R.id.todos_delete_list:
-                new DatabaseManager(getBaseContext()).removeListAndChildTasks(ID);
-                HomePage.listDeleted(ID);
+                new DatabaseManager(getBaseContext()).removeListAndChildTasks(listID);
+                HomePage.listDeleted(listID);
                 finish();
                 break;
         }
@@ -132,7 +117,7 @@ public class ListActivity extends AppCompatActivity {
 
         // load theme name from database using ID from intentExtra and set it as background
         DatabaseManager db = new DatabaseManager(ListActivity.this);
-        String theme = db.getListTheme(ID);
+        String theme = db.getListTheme(listID);
         themeRes = getResources().getIdentifier(theme, "drawable", getApplicationContext().getPackageName());
         parentBackground = findViewById(R.id.todos_parentBackground);
         parentBackground.setImageResource(themeRes);
@@ -150,7 +135,7 @@ public class ListActivity extends AppCompatActivity {
         tasksRecycler.setLayoutManager(new LinearLayoutManager(getBaseContext(), RecyclerView.VERTICAL, false));
 
         // setup Adapter for Recycler View
-        tasksListAdapter = new ListItemTaskAdapter(getBaseContext(), R.layout.item_task, taskObjectList);
+        tasksListAdapter = new ListItemTaskAdapter(this, R.layout.item_task, taskObjectList);
         tasksRecycler.setAdapter(tasksListAdapter);
 
         // swipe to delete for Recycler View
@@ -159,7 +144,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void loadTasksFromDatabase() {
         DatabaseManager db = new DatabaseManager(getBaseContext());
-        Cursor cursor = db.getAllTasksUnderList(ID);
+        Cursor cursor = db.getAllTasksUnderList(listID);
 
         TaskObject task;
 
@@ -205,7 +190,7 @@ public class ListActivity extends AppCompatActivity {
         int currentThemePosition = adapter.selectCurrentTheme(themeRes);
         themeChangeRecycler.scrollToPosition(currentThemePosition - 2);
 
-        adapter.setID(ID);
+        adapter.setID(listID);
 
         alertDialog.show();
     }
@@ -384,9 +369,9 @@ public class ListActivity extends AppCompatActivity {
                 } else {
                     //update new title in database
                     DatabaseManager db = new DatabaseManager(getBaseContext());
-                    db.renameList(ID, renameList.getText().toString().trim());
+                    db.renameList(listID, renameList.getText().toString().trim());
                     db.close();
-                    HomePage.refreshTitle(ID, renameList.getText().toString().trim());
+                    HomePage.refreshTitle(listID, renameList.getText().toString().trim());
                 }
             }
         });
@@ -394,7 +379,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void add_task_to_database(String taskDescription) {
         if (!taskDescription.isEmpty()) {
-            TaskObject task = new TaskObject(taskDescription, Boolean.parseBoolean(date), Boolean.parseBoolean(time));
+            TaskObject task = new TaskObject(taskDescription, false, Boolean.parseBoolean(time));
 
             String[] dateData = date.split("-");
             String[] timeData = time.split(":");
@@ -411,14 +396,15 @@ public class ListActivity extends AppCompatActivity {
             }
 
             DatabaseManager db = new DatabaseManager(getBaseContext());
-            int taskID = db.AddTaskToDatabase(taskDescription, false, ID, date, time);
-
+            int taskID = db.AddTaskToDatabase(taskDescription, false, listID, date, time);
             task.setID(taskID);
 
             taskObjectList.add(task);
             tasksListAdapter.notifyItemInserted(taskObjectList.size() - 1);
 
-            setAlarm(task);
+            if (!date.equals("0") && !time.equals("0")) {
+                setAlarm(task);
+            }
         }
 
         //reset global date-time variables to not interfere with consecutive next task being added
@@ -429,7 +415,7 @@ public class ListActivity extends AppCompatActivity {
     private void setAlarm(TaskObject task) {
         Reminder reminder = new Reminder(task.getID(), task.getDay(), task.getMonth(), task.getYear(), task.getHour(), task.getMinute(), task.getTaskDescription());
 
-        new AlarmReceiver().setAlarm(getApplicationContext(), reminder, ID);
+        new AlarmReceiver().setAlarm(getBaseContext(), reminder, listID);
         Log.e("NOTIF: ", "1");
     }
 
@@ -460,5 +446,4 @@ public class ListActivity extends AppCompatActivity {
             tasksListAdapter.notifyItemRemoved(viewHolder.getPosition());
         }
     };
-
 }

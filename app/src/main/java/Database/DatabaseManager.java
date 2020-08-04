@@ -11,6 +11,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import AlarmHelpers.AlarmReceiver;
 import Objects.ListObject;
 import Objects.Reminder;
 import Objects.TaskObject;
@@ -36,11 +41,12 @@ public class DatabaseManager extends SQLiteOpenHelper implements BaseDatabase{
         db.execSQL("create table " + TASKS_TABLE +
                     " (ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "DESCRIPTION TEXT," +
-                    "ISFINISHED INTEGER," +
+                    "ISFINISHED INTEGER DEFAULT 0," +
                     "PARENTID INTEGER," +
-                    "DUEDATE TEXT," +
-                    "DUETIME TEXT," +
-                    "ISIMPORTANT INTEGER DEFAULT 0)");
+                    "DUEDATE TEXT DEFAULT 0," +
+                    "DUETIME TEXT DEFAULT 0," +
+                    "ISIMPORTANT INTEGER DEFAULT 0," +
+                    "ISNOTIFICATIONPENDING INTEGER DEFAULT 0)");
     }
 
     @Override
@@ -73,11 +79,15 @@ public class DatabaseManager extends SQLiteOpenHelper implements BaseDatabase{
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("DESCRIPTION", taskDescription);
-        values.put("ISFINISHED", isFinished);
-        values.put("PARENTID", parentID);
-        values.put("DUEDATE", dueDate);
-        values.put("DUETIME", dueTime);
+        values.put(TASKS_DESCRIPTION, taskDescription);
+        values.put(TASKS_IS_FINISHED, isFinished);
+        values.put(TASKS_PARENT_ID, parentID);
+        values.put(TASKS_DATE, dueDate);
+        values.put(TASKS_TIME, dueTime);
+
+        if(!dueDate.equals("0") && !dueTime.equals("0")){
+            values.put(TASKS_IS_NOTIF_PENDING, "1");
+        }
 
         db.insert(TASKS_TABLE, null, values);
 
@@ -89,17 +99,67 @@ public class DatabaseManager extends SQLiteOpenHelper implements BaseDatabase{
         return ID;
     }
 
+    public void UpdateTaskInDatabase(int taskID, String taskDescription, String date, String time, Calendar cal){
+        ContentValues values = new ContentValues();
+        values.put(TASKS_DESCRIPTION, taskDescription);
+        values.put(TASKS_DATE, date);
+        values.put(TASKS_TIME, time);
+
+        if(System.currentTimeMillis() - cal.getTimeInMillis() > 0){
+            values.put(TASKS_IS_NOTIF_PENDING, "1");
+            new AlarmReceiver().setAlarm(context, getReminder(taskID), getListIDfromTaskID(taskID));
+        }
+
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
+    }
+
     public Cursor getAllLists() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from " + LISTS_TABLE, null);
     }
 
-    public Cursor getAllTasksUnderList(int parentID) {
-        return this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE PARENTID = " + parentID, null);
+    public List<Reminder> getPendingReminders() {
+        List<Reminder> reminderList = new ArrayList<>();
+        TaskObject task;
+
+        Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE ISNOTIFICATIONPENDIND = 1", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                task = new TaskObject(cursor.getString(cursor.getColumnIndex(TASKS_DESCRIPTION)),
+                                                "1".equals(cursor.getString(cursor.getColumnIndex(TASKS_IS_FINISHED))),
+                                                true);
+                task.setMarkedImportant("1".equals(cursor.getString(6)));
+                task.setID(cursor.getInt(0));
+                task.setDate(cursor.getString(4));
+                task.setTime(cursor.getString(5));
+                reminderList.add(new Reminder(task.getID(), task.getDay(), task.getMonth(), task.getYear(), task.getHour(), task.getMinute(), task.getTaskDescription()));
+            } while (cursor.moveToNext());
+        }
+        return reminderList;
+    }
+
+    public Cursor getAllTasksUnderList(int listID) {
+        return this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE PARENTID = " + listID, null);
     }
 
     public Cursor getTasksDueToday(String date) {
         return this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE DUEDATE = ?", new String[]{date});
+    }
+
+    public int getNumberOfTasksDueToday(){
+        String date;
+        Calendar c = Calendar.getInstance();
+        date = c.get(Calendar.DAY_OF_MONTH) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.YEAR);
+        Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE DUEDATE = ?", new String[]{date});
+
+        int count = 0;
+        while (cursor.moveToNext())
+            count++;
+
+        cursor.close();
+
+        return count;
     }
 
     public Cursor getImportantTasks() {
@@ -132,61 +192,76 @@ public class DatabaseManager extends SQLiteOpenHelper implements BaseDatabase{
         this.getWritableDatabase().delete(TASKS_TABLE, "ID = " + ID, null);
     }
 
-    public void removeListAndChildTasks(int ID) {
-        this.getWritableDatabase().delete(LISTS_TABLE, "ID = " + ID, null);
-        this.getWritableDatabase().delete(TASKS_TABLE, "PARENTID = " + ID, null);
+    public void removeListAndChildTasks(int listID) {
+        this.getWritableDatabase().delete(LISTS_TABLE, "ID = " + listID, null);
+        this.getWritableDatabase().delete(TASKS_TABLE, "PARENTID = " + listID, null);
     }
 
-    public void updateTaskToFinished(int ID) {
+    public void hasBeenNotified(int taskID){
+        ContentValues values = new ContentValues();
+        values.put(TASKS_IS_NOTIF_PENDING, "0");
+
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
+    }
+
+    public void updateTaskToFinished(int taskID) {
         ContentValues values = new ContentValues();
         values.put("ISFINISHED", 1);
 
-        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
     }
 
-    public void updateTaskToUnfinished(int ID) {
+    public void updateTaskToUnfinished(int taskID) {
         ContentValues values = new ContentValues();
         values.put("ISFINISHED", 0);
 
-        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
     }
 
-    public void updateTaskToImportant(int ID) {
+    public void updateTaskToImportant(int taskID) {
         ContentValues values = new ContentValues();
         values.put("ISIMPORTANT", 1);
 
-        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
     }
 
-    public void updateTaskToNotImportant(int ID) {
+    public void updateTaskToNotImportant(int taskID) {
         ContentValues values = new ContentValues();
         values.put("ISIMPORTANT", 0);
 
-        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + ID, null);
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
     }
 
-    public String getListTheme(int id) {
-        Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + LISTS_TABLE + " WHERE ID = " + id, null);
+    public String getListTheme(int listID) {
+        Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + LISTS_TABLE + " WHERE ID = " + listID, null);
         cursor.moveToNext();
         return cursor.getString(3);
     }
 
-    public void updateTheme(int ID, String themeName) {
+    public void updateTheme(int listID, String themeName) {
         ContentValues values = new ContentValues();
         values.put("THEME", themeName);
-        this.getWritableDatabase().update(LISTS_TABLE, values, "ID = " + ID, null);
+        this.getWritableDatabase().update(LISTS_TABLE, values, "ID = " + listID, null);
     }
 
-    public void renameList(int ID, String title) {
+    public void renameList(int listID, String title) {
         ContentValues values = new ContentValues();
         values.put("NAME", title);
-        this.getWritableDatabase().update(LISTS_TABLE, values, "ID = " + ID, null);
+        this.getWritableDatabase().update(LISTS_TABLE, values, "ID = " + listID, null);
     }
 
     public int getListIDfromTaskID(int taskID){
         Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + TASKS_TABLE + " WHERE ID = " + taskID, null);
         cursor.moveToNext();
         return cursor.getInt(cursor.getColumnIndex("PARENTID"));
+    }
+
+    public String getListName(int listID) {
+        Cursor cursor = this.getWritableDatabase().rawQuery("SELECT * FROM " + LISTS_TABLE + " WHERE ID = " + listID, null);
+        if (cursor.moveToNext())
+            return cursor.getString(cursor.getColumnIndex("NAME"));
+        else
+            return "Due Today";
     }
 
 }

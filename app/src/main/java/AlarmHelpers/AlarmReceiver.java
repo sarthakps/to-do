@@ -1,26 +1,26 @@
 package AlarmHelpers;
 
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.todo.DueToday;
 import com.example.todo.ListActivity;
 import com.example.todo.R;
 
 
-import Database.AlarmDatabaseHelper;
+import java.util.Calendar;
+
 import Database.BaseDatabase;
 import Database.DatabaseManager;
 import Objects.Reminder;
@@ -31,20 +31,27 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int taskID = Integer.parseInt(intent.getStringExtra(AlarmDatabaseHelper.REMINDERS_TASK_ID));
-        Log.e("NOTIF", "taskID " + taskID);
 
+        int listID = Integer.parseInt(intent.getStringExtra(BaseDatabase.TASKS_PARENT_ID));
+
+
+        // check if daily alarm for dueToday is received
+        if(listID == BaseDatabase.TODAY_ID){
+            daily_due_today_notification(context);
+            return;
+        }
+
+
+        // get taskID and Reminder(taskID)
         DatabaseManager db = new DatabaseManager(context);
-        Reminder reminder = db.getReminder(taskID);
-
-        Log.e("NOTIF: ", "5");
-
-        Log.e("NOTIF: ", "6");
+        int taskID = Integer.parseInt(intent.getStringExtra(BaseDatabase.REMINDERS_TASK_ID));
+        Reminder reminder = db.getReminder(taskID);;
 
         // creating intent to open ListActivity on clicking the notification
         Intent editIntent = new Intent(context, ListActivity.class);
-        editIntent.putExtra(BaseDatabase.TASKS_ID, db.getListIDfromTaskID(reminder.getTaskID()));
+        editIntent.putExtra(BaseDatabase.TASKS_PARENT_ID, listID);
         PendingIntent mClick = PendingIntent.getActivity(context, reminder.getTaskID(), editIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         //creating intent for action button | mark as done
         Intent actionIntent = new Intent(context, NotificationActionReceiver.class);
@@ -53,40 +60,69 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, taskID, actionIntent, 0);
 
 
-        Log.e("NOTIF: ", "7");
+        //create RemoteViews for custom notification layout
+        RemoteViews collapsedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_collapsed);
+        collapsedNotification.setTextViewText(R.id.notif_collapsed_task_description, reminder.getTaskDescription());
+        collapsedNotification.setTextViewText(R.id.notif_collapsed_list_name, db.getListName(listID));
+        collapsedNotification.setImageViewResource(R.id.notif_collapsed_icon, db.getListIcon(listID));
 
-        // Create Notification
+
+        // Build the Notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "Due Tasks")
-                .setSmallIcon(R.drawable.icon_alarm)
-                .setContentTitle("To-Do App")
-                .setContentText(reminder.getTaskDescription())
+                .setSmallIcon(db.getListIcon(listID))
+                .setCustomContentView(collapsedNotification)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setAutoCancel(true)
-                .addAction(R.drawable.icon_done, "Mark as done", actionPendingIntent);
+                .setAutoCancel(true);
 
-        Log.e("NOTIF: ", reminder.getTaskDescription() + "null");
 
+        // Create notification from builder and display it
         Log.e("NOTIF: ", "8");
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         builder.setContentIntent(mClick);
         notificationManager.notify(taskID, builder.build());
 
+        //update in database that the task's notification has been sent/displayed
+        db.hasBeenNotified(taskID);
     }
 
     public void setAlarm(Context context, Reminder reminder, int listID) {
+
+        if(listID == BaseDatabase.TODAY_ID){
+            mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.putExtra(BaseDatabase.REMINDERS_TASK_ID, reminder.getTaskID() + "");
+            intent.putExtra(BaseDatabase.TASKS_PARENT_ID, listID + "");
+
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, 7);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+
+            mPendingIntent = PendingIntent.getBroadcast(context, BaseDatabase.TODAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, mPendingIntent);
+
+//            ComponentName receiver = new ComponentName(context, AlarmHelpers.BootReceiver.class);
+//            PackageManager pm = context.getPackageManager();
+//            pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
+            Log.e("DAILY-ALARM", "SET");
+            return;
+        }
+
         Log.e("NOTIF: ", reminder.getTaskID() + "");
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         // Put Reminder ID in Intent Extra
         Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra(AlarmDatabaseHelper.REMINDERS_TASK_ID, reminder.getTaskID() + "");
-        intent.putExtra("listID", listID + "");
+        intent.putExtra(BaseDatabase.REMINDERS_TASK_ID, reminder.getTaskID() + "");
+        intent.putExtra(BaseDatabase.TASKS_PARENT_ID, listID + "");
         mPendingIntent = PendingIntent.getBroadcast(context, reminder.getTaskID(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Log.e("NOTIF: ", "3");
         // Start alarm using notification time
 
-        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP,  reminder.getCalendar().getTimeInMillis(), mPendingIntent);
+        mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, reminder.getCalendar().getTimeInMillis(), mPendingIntent);
 
         Log.e("NOTIF: ", "4");
         // Restart alarm if device is rebooted
@@ -108,6 +144,41 @@ public class AlarmReceiver extends BroadcastReceiver {
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
+    }
+
+    private void daily_due_today_notification(Context context){
+
+        Log.e("DAILY-ALARM", "");
+
+        // creating intent to open ListActivity on clicking the notification
+        Intent editIntent = new Intent(context, DueToday.class);
+        PendingIntent mClick = PendingIntent.getActivity(context, 0, editIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        // get number of tasks due today
+        int dueTodayTasks = new DatabaseManager(context).getNumberOfTasksDueToday();
+
+
+        //create RemoteViews for custom notification layout
+        RemoteViews collapsedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_collapsed);
+        collapsedNotification.setTextViewText(R.id.notif_collapsed_task_description, "You have " + dueTodayTasks + " due today!");
+        collapsedNotification.setViewVisibility(R.id.notif_collapsed_list_name, View.GONE);
+        collapsedNotification.setImageViewResource(R.id.notif_collapsed_icon, R.drawable.icon_alarm);
+
+
+        // Build the Notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "Due Tasks")
+                .setSmallIcon(R.drawable.icon_alarm)
+                .setCustomContentView(collapsedNotification)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true);
+
+
+        // Create notification from builder and display it
+        Log.e("NOTIF: ", "8");
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        builder.setContentIntent(mClick);
+        notificationManager.notify(BaseDatabase.TODAY_ID, builder.build());
     }
 
 }

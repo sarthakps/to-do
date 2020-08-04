@@ -19,6 +19,5 @@ public class NotificationActionReceiver extends BroadcastReceiver {
             DatabaseManager db = new DatabaseManager(context);
             db.updateTaskToFinished(taskID);
         }
-
     }
 }
