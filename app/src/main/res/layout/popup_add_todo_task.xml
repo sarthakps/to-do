@@ -15,7 +15,7 @@
         android:textSize="@dimen/text_medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:inputType="textCapSentences"
+        android:inputType="textCapSentences|textMultiLine"
         app:layout_constraintEnd_toStartOf="@id/popup_add_task_done"
         android:layout_marginEnd="@dimen/hori_medium"
         android:layout_marginStart="@dimen/hori_medium"
@@ -36,23 +36,34 @@
         android:layout_marginTop="@dimen/vert_medium"/>
 
     <TextView
+        android:id="@+id/popup_add_task_static_remindMeAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remind me at:"
+        android:layout_marginTop="@dimen/vert_medium"
+        android:padding="5dp"
+        android:textColor="@color/accentSecondary"
+        android:textSize="@dimen/text_medium"
+        app:layout_constraintStart_toStartOf="@+id/popup_add_task_taskDesc"
+        app:layout_constraintTop_toBottomOf="@id/popup_add_task_taskDesc"/>
+
+    <TextView
         android:id="@+id/popup_add_task_pick_date_static_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/vert_medium"
         android:background="@drawable/ripple_effect_oval"
         android:clickable="true"
         android:padding="5dp"
         android:text="Pick a date"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_medium"
-        app:layout_constraintStart_toStartOf="@+id/popup_add_task_taskDesc"
-        app:layout_constraintTop_toBottomOf="@id/popup_add_task_taskDesc" />
+        android:textColor="@color/textPrimaryBright"
+        android:textSize="@dimen/text_normal"
+        app:layout_constraintBaseline_toBaselineOf="@id/popup_add_task_static_remindMeAt"
+        app:layout_constraintStart_toEndOf="@+id/popup_add_task_static_remindMeAt"/>
+
     <ImageView
         android:id="@+id/popup_add_task_pick_date_button"
-        android:layout_width="@dimen/btn_icon_large"
-        android:layout_height="@dimen/btn_icon_large"
-        android:layout_marginStart="@dimen/hori_medium"
+        android:layout_width="@dimen/btn_icon_medium"
+        android:layout_height="@dimen/btn_icon_medium"
         android:src="@drawable/icon_date_picker"
         android:background="@drawable/ripple_effect"
         android:focusable="true"

@@ -28,18 +28,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Today"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/ripple_effect_rectangle"
             android:textColor="@color/accentSecondary"
             android:gravity="center"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:padding="3dp"/>
 
         <TextView
             android:id="@+id/popup_datetime_tomorrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tomorrow"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/ripple_effect_rectangle"
             android:textColor="@color/accentSecondary"
             android:gravity="center"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:padding="3dp"/>
 
 
     </LinearLayout>
@@ -56,13 +62,16 @@
 
     <Button
         android:id="@+id/popup_datetime_confirm"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="Done"
         android:textColor="@color/textPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/popup_datetime_time_picker" />
+        app:layout_constraintTop_toBottomOf="@id/popup_datetime_time_picker"
+        android:layout_marginStart="@dimen/hori_medium"
+        android:layout_marginEnd="@dimen/hori_medium"
+        android:layout_marginBottom="@dimen/vert_small"/>
 
 
 

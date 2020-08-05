@@ -12,19 +12,20 @@ public class ConstantsDB {
     static public List<ThemeObject> getThemeObjectsList(){
         List<ThemeObject> list = new ArrayList<>();
 
-        list.add(new ThemeObject(R.drawable.test_theme, false));
+        //add theme images here
+        list.add(new ThemeObject(R.drawable.office3, false));
         list.add(new ThemeObject(R.drawable.books1, false));
         list.add(new ThemeObject(R.drawable.books2, false));
         list.add(new ThemeObject(R.drawable.books3, false));
         list.add(new ThemeObject(R.drawable.cabin1, false));
         list.add(new ThemeObject(R.drawable.city1, false));
-        list.add(new ThemeObject(R.drawable.city2, false));
+//        list.add(new ThemeObject(R.drawable.city2, false)); //
         list.add(new ThemeObject(R.drawable.city3, false));
         list.add(new ThemeObject(R.drawable.city4, false));
         list.add(new ThemeObject(R.drawable.flowers1, false));
         list.add(new ThemeObject(R.drawable.forest1, false));
         list.add(new ThemeObject(R.drawable.forest2, false));
-        list.add(new ThemeObject(R.drawable.forest3, false));
+//        list.add(new ThemeObject(R.drawable.forest3, false)); //
         list.add(new ThemeObject(R.drawable.forest4, false));
         list.add(new ThemeObject(R.drawable.interior1, false));
         list.add(new ThemeObject(R.drawable.interior2, false));
@@ -35,12 +36,11 @@ public class ConstantsDB {
         list.add(new ThemeObject(R.drawable.landscape2, false));
         list.add(new ThemeObject(R.drawable.landscape3, false));
         list.add(new ThemeObject(R.drawable.mountain1, false));
-        list.add(new ThemeObject(R.drawable.mountains2, false));
+//        list.add(new ThemeObject(R.drawable.mountains2, false)); //
         list.add(new ThemeObject(R.drawable.office1, false));
         list.add(new ThemeObject(R.drawable.office2, false));
-        list.add(new ThemeObject(R.drawable.office3, false));
         list.add(new ThemeObject(R.drawable.office4, false));
-        list.add(new ThemeObject(R.drawable.office5, false));
+//        list.add(new ThemeObject(R.drawable.office5, false)); //
         list.add(new ThemeObject(R.drawable.plain1, false));
         list.add(new ThemeObject(R.drawable.plant2, false));
         list.add(new ThemeObject(R.drawable.plant3, false));
@@ -49,8 +49,6 @@ public class ConstantsDB {
         list.add(new ThemeObject(R.drawable.sea2, false));
         list.add(new ThemeObject(R.drawable.sea3, false));
         list.add(new ThemeObject(R.drawable.sky1, false));
-
-        //add theme images here
 
         return list;
     }

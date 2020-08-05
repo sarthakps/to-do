@@ -68,7 +68,7 @@ public class HomePage extends AppCompatActivity {
 
         create_notification_channel();
 
-        set_daily_today_alarm();
+        //set_daily_today_alarm();
     }
 
 

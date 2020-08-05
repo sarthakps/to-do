@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -36,7 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         // check if daily alarm for dueToday is received
-        if(listID == BaseDatabase.TODAY_ID){
+        if (listID == BaseDatabase.TODAY_ID) {
             daily_due_today_notification(context);
             return;
         }
@@ -45,7 +46,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         // get taskID and Reminder(taskID)
         DatabaseManager db = new DatabaseManager(context);
         int taskID = Integer.parseInt(intent.getStringExtra(BaseDatabase.REMINDERS_TASK_ID));
-        Reminder reminder = db.getReminder(taskID);;
+        Reminder reminder = db.getReminder(taskID);
+        ;
 
         // creating intent to open ListActivity on clicking the notification
         Intent editIntent = new Intent(context, ListActivity.class);
@@ -60,17 +62,24 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, taskID, actionIntent, 0);
 
 
-        //create RemoteViews for custom notification layout
+        //create RemoteViews for custom collapsed notification layout
         RemoteViews collapsedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_collapsed);
         collapsedNotification.setTextViewText(R.id.notif_collapsed_task_description, reminder.getTaskDescription());
-        collapsedNotification.setTextViewText(R.id.notif_collapsed_list_name, db.getListName(listID));
         collapsedNotification.setImageViewResource(R.id.notif_collapsed_icon, db.getListIcon(listID));
+
+
+        //create RemoteViews for custom collapsed notification layout
+        RemoteViews expandedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_expanded);
+        expandedNotification.setTextViewText(R.id.notif_expanded_task_description, reminder.getTaskDescription());
+        expandedNotification.setTextViewText(R.id.notif_expanded_list_name, db.getListName(listID));
+        expandedNotification.setImageViewResource(R.id.notif_expanded_icon, db.getListIcon(listID));
 
 
         // Build the Notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "Due Tasks")
-                .setSmallIcon(db.getListIcon(listID))
+                .setSmallIcon(R.drawable.icon_done)
                 .setCustomContentView(collapsedNotification)
+                .setCustomBigContentView(expandedNotification)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setAutoCancel(true);
 
@@ -87,7 +96,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setAlarm(Context context, Reminder reminder, int listID) {
 
-        if(listID == BaseDatabase.TODAY_ID){
+        if (listID == BaseDatabase.TODAY_ID) {
             mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
             Intent intent = new Intent(context, AlarmReceiver.class);
@@ -102,9 +111,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             mPendingIntent = PendingIntent.getBroadcast(context, BaseDatabase.TODAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, mPendingIntent);
 
-//            ComponentName receiver = new ComponentName(context, AlarmHelpers.BootReceiver.class);
-//            PackageManager pm = context.getPackageManager();
-//            pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            ComponentName receiver = new ComponentName(context, AlarmHelpers.BootReceiver.class);
+            PackageManager pm = context.getPackageManager();
+            pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
             Log.e("DAILY-ALARM", "SET");
             return;
@@ -146,7 +155,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 PackageManager.DONT_KILL_APP);
     }
 
-    private void daily_due_today_notification(Context context){
+    private void daily_due_today_notification(Context context) {
 
         Log.e("DAILY-ALARM", "");
 
@@ -162,13 +171,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         //create RemoteViews for custom notification layout
         RemoteViews collapsedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_collapsed);
         collapsedNotification.setTextViewText(R.id.notif_collapsed_task_description, "You have " + dueTodayTasks + " due today!");
-        collapsedNotification.setViewVisibility(R.id.notif_collapsed_list_name, View.GONE);
+        //collapsedNotification.setViewVisibility(R.id.notif_collapsed_list_name, View.GONE);
         collapsedNotification.setImageViewResource(R.id.notif_collapsed_icon, R.drawable.icon_alarm);
 
 
         // Build the Notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "Due Tasks")
-                .setSmallIcon(R.drawable.icon_alarm)
+                .setSmallIcon(R.drawable.icon_done)
                 .setCustomContentView(collapsedNotification)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setAutoCancel(true);

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/notif_collapsed_parent"
+    android:id="@+id/notif_expanded_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/hori_medium">
+    android:padding="@dimen/hori_small">
 
     <ImageView
-        android:id="@+id/notif_collapsed_icon"
+        android:id="@+id/notif_expanded_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/icon_alarm"
@@ -23,7 +23,7 @@
         android:layout_weight="5">
 
         <TextView
-            android:id="@+id/notif_collapsed_package_name"
+            android:id="@+id/notif_expanded_package_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/hori_small"
@@ -32,34 +32,33 @@
             android:textSize="@dimen/text_medium" />
 
         <TextView
-            android:id="@+id/notif_collapsed_task_description"
+            android:id="@+id/notif_expanded_task_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/hori_small"
             android:text="This is the task that is due"
-            android:singleLine="true"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_normal"
+            android:maxLines="3"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/notif_collapsed_list_name"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/hori_small"-->
-<!--            android:singleLine="true"-->
-<!--            android:text="List Name"-->
-<!--            android:textColor="@color/textPrimary"-->
-<!--            android:textSize="@dimen/text_small" />-->
+        <TextView
+            android:id="@+id/notif_expanded_list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/hori_small"
+            android:text="List Name"
+            android:textColor="@color/greyish_blue"
+            android:textSize="@dimen/text_small" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/notif_collapsed_timestamp"
+        android:id="@+id/notif_expanded_timestamp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="12:00 AM"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/slate_gray"
         android:textSize="@dimen/text_small"
         android:gravity="end"/>
 

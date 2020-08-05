@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -16,7 +13,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import AlarmHelpers.AlarmReceiver;
-import Objects.ListObject;
 import Objects.Reminder;
 import Objects.TaskObject;
 
@@ -200,6 +196,13 @@ public class DatabaseManager extends SQLiteOpenHelper implements BaseDatabase{
     public void hasBeenNotified(int taskID){
         ContentValues values = new ContentValues();
         values.put(TASKS_IS_NOTIF_PENDING, "0");
+
+        this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
+    }
+
+    public void notificationPending(int taskID){
+        ContentValues values = new ContentValues();
+        values.put(TASKS_IS_NOTIF_PENDING, "1");
 
         this.getWritableDatabase().update(TASKS_TABLE, values, "ID = " + taskID, null);
     }

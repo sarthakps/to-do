@@ -1,10 +1,9 @@
 package Objects;
 
-import android.graphics.drawable.Drawable;
-
 public class ThemeObject {
 
     private int imageRes;
+
     private boolean isSelected = false;
 
     public ThemeObject (int imageRes, boolean isSelected){

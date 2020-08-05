@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,8 +55,6 @@ public class ImportantTasks extends AppCompatActivity {
         int month = c.get(Calendar.MONTH) + 1;
 
         String date = c.get(Calendar.DAY_OF_MONTH) + "-" + month + "-" + c.get(Calendar.YEAR);
-
-        Toast.makeText(getBaseContext(), date, Toast.LENGTH_SHORT).show();
 
         DatabaseManager db = new DatabaseManager(getApplicationContext());
         Cursor cursor = db.getImportantTasks();

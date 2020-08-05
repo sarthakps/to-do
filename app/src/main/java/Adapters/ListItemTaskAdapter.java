@@ -1,9 +1,7 @@
 package Adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +11,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todo.ListActivity;
 import com.example.todo.R;
 import com.github.lguipeng.library.animcheckbox.AnimCheckBox;
 
@@ -100,6 +96,8 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
 
             holder.dueDateTime.setText(task.getMonthNameFormattedDate() + "  " + task.get12hrTimeWithAmPm());
             holder.dueDateTime.setVisibility(View.VISIBLE);
+        } else {
+            holder.dueDateTime.setVisibility(View.GONE);
         }
 
         if (task.isTaskFinished()) {
@@ -124,7 +122,6 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
 
     private void edit_task_popup(final int position){
         TaskObject task = taskObjectList.get(position);
-        Toast.makeText(context, "ItemView Clicked", Toast.LENGTH_SHORT).show();
 
         View view_add_task = LayoutInflater.from(context).inflate(R.layout.popup_add_todo_task, null);
 
@@ -137,14 +134,18 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
         final TextView clearDueDate = view_add_task.findViewById(R.id.popup_add_task_clear_duedate);
         final EditText taskDescription = view_add_task.findViewById(R.id.popup_add_task_taskDesc);
 
-
         final String[] dateTime = new String[2];
-
 
         //populate field
         taskDescription.setText(task.getTaskDescription());
         dateTime[0] = task.getDate();
         dateTime[1] = task.getTime();
+
+        // populate date time with current/previous values
+        if(!dateTime[0].equals("0")){
+            dateTimeStaticTextView.setText(task.getDate() + " " + task.get12hrTimeWithAmPm());
+            clearDueDate.setVisibility(View.VISIBLE);
+        }
 
 
         view_add_task.findViewById(R.id.popup_add_task_done).setOnClickListener(new View.OnClickListener() {
@@ -198,23 +199,31 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
                 task.setDay(Integer.parseInt(dateData[0]));
                 task.setMonth(Integer.parseInt(dateData[1]));
                 task.setYear(Integer.parseInt(dateData[2]));
+            } else {
+                task.setDate("0");
             }
 
             if (timeData.length > 1) {
                 task.setHour(Integer.parseInt(timeData[0]));
                 task.setMinute(Integer.parseInt(timeData[1]));
+            } else {
+                task.setTime("0");
             }
 
             DatabaseManager db = new DatabaseManager(context);
             db.UpdateTaskInDatabase(task.getID(), taskDescription, date, time, task.getCalendar());
 
+
             AlarmReceiver alarmReceiver = new AlarmReceiver();
             alarmReceiver.cancelAlarm(context, task.getID());
+            db.hasBeenNotified(task.getID());
 
             if (!date.equals("0") && !time.equals("0")) {
                 alarmReceiver.setAlarm(context, db.getReminder(task.getID()), db.getListIDfromTaskID(task.getID()));
+                db.notificationPending(task.getID());
             }
 
+            dateTime[0] = dateTime[1] = "0";
             notifyItemChanged(position);
         }
     }
@@ -251,6 +260,23 @@ public class ListItemTaskAdapter extends RecyclerView.Adapter<ListItemTaskAdapte
         final TimePicker timePicker = view_datetime_popup.findViewById(R.id.popup_datetime_time_picker);
         timePicker.setCurrentHour(12);
         timePicker.setCurrentMinute(0);
+
+
+        //populate Date & Time pickers with current/previous values
+        if(!dateTime[0].equals("0")){
+            String[] dateData = dateTime[0].split("-");
+            String[] timeData = dateTime[1].split(":");
+
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateData[0]));
+            c.set(Calendar.MONTH, Integer.parseInt(dateData[1]) - 1);
+            c.set(Calendar.YEAR, Integer.parseInt(dateData[2]));
+            datePicker.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+
+            timePicker.setCurrentHour(Integer.parseInt(timeData[0]));
+            timePicker.setCurrentMinute(Integer.parseInt(timeData[1]));
+        }
+
 
         //done button listener
         view_datetime_popup.findViewById(R.id.popup_datetime_confirm).setOnClickListener(new View.OnClickListener() {

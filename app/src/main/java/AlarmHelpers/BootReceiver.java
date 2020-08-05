@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 import Database.DatabaseManager;
@@ -19,7 +18,6 @@ public class BootReceiver extends BroadcastReceiver {
 
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
 
-            Toast.makeText(context, "TODO BOOT RECEIVED.", Toast.LENGTH_LONG).show();
             Log.e("BOOT_TODO", "Boot Receiver OnReceive triggered!");
             DatabaseManager db = new DatabaseManager(context);
             AlarmReceiver alarmReceiver = new AlarmReceiver();
