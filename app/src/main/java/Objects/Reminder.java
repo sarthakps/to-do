@@ -20,6 +20,30 @@ public class Reminder {
         this.taskDescription = taskDescription;
     }
 
+    public String get12hrTimeWithAmPm(){
+        Calendar datetime = Calendar.getInstance();
+        datetime.set(Calendar.HOUR_OF_DAY, getHour());
+        datetime.set(Calendar.MINUTE, getMinute());
+
+        String am_pm;
+        if (datetime.get(Calendar.AM_PM) == Calendar.AM)
+            am_pm = "AM";
+        else
+            am_pm = "PM";
+
+        int tempHour = getHour();
+        if(tempHour > 11){
+            tempHour -= 12;
+        }
+
+        if(minute > 9){
+            return tempHour + ":" + getMinute() + " " + am_pm;
+        } else {
+            return tempHour + ":0" + getMinute() + " " + am_pm;
+        }
+
+    }
+
     public Calendar getCalendar(){
         Calendar calendar = Calendar.getInstance();
 

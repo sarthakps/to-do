@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="7dp"
+    android:orientation="vertical"
+    android:background="#44ababab">
+
+    <TextView
+        android:id="@+id/widget_list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select a list"
+        android:textSize="@dimen/text_normal"
+        android:textColor="@color/white"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/arrow_left"/>
+
+    <ListView
+        android:id="@+id/widget_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/widget_list_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>

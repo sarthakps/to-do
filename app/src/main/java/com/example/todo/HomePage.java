@@ -49,11 +49,11 @@ public class HomePage extends AppCompatActivity {
     private ListTodoAdapter persistentAdapter;
     private static ListTodoAdapter dynamicAdapter;
 
-
     public static String SelectedIcon;
     public static int SelectedTheme;
     private static ImageView selectedIconImage;
     private View view;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,7 @@ public class HomePage extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_homepage, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -270,5 +271,4 @@ public class HomePage extends AppCompatActivity {
             dynamicAdapter.notifyItemRemoved(viewHolder.getPosition());
         }
     };
-
 }

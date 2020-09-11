@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.r0adkll.slidr.Slidr;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -30,6 +32,8 @@ public class DueTomorrow extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_due_tomorrow);
+
+        Slidr.attach(this);
 
         assignUIcomponents();
 

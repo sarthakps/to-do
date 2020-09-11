@@ -54,7 +54,7 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
                     Intent intent = new Intent(context, DueToday.class);
                     Activity activity = (Activity) context;
                     activity.startActivity(intent);
-                    activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
+                    activity.overridePendingTransition(R.anim.to_list_activity, R.anim.to_list_activity);
                 }
 
                 else if (list.get(position).getId() == -400) {
@@ -62,7 +62,7 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
                     Intent intent = new Intent(context, DueTomorrow.class);
                     Activity activity = (Activity) context;
                     activity.startActivity(intent);
-                    activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
+                    activity.overridePendingTransition(R.anim.to_list_activity, R.anim.to_list_activity);
                 }
 
                 else if (list.get(position).getId() == -600) {
@@ -70,7 +70,7 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
                     Intent intent = new Intent(context, ImportantTasks.class);
                     Activity activity = (Activity) context;
                     activity.startActivity(intent);
-                    activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
+                    activity.overridePendingTransition(R.anim.to_list_activity, R.anim.to_list_activity);
                 }
 
                 else {
@@ -79,7 +79,7 @@ public class ListTodoAdapter extends RecyclerView.Adapter<ListTodoAdapter.ViewHo
                     intent.putExtra("title", list.get(position).getName());
                     intent.putExtra(BaseDatabase.TASKS_PARENT_ID, list.get(position).getId());
                     activity.startActivity(intent);
-                    activity.overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_in_from_left);
+                    activity.overridePendingTransition(R.anim.to_list_activity, R.anim.to_list_activity);
                 }
 
             }

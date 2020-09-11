@@ -47,7 +47,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         DatabaseManager db = new DatabaseManager(context);
         int taskID = Integer.parseInt(intent.getStringExtra(BaseDatabase.REMINDERS_TASK_ID));
         Reminder reminder = db.getReminder(taskID);
-        ;
+
 
         // creating intent to open ListActivity on clicking the notification
         Intent editIntent = new Intent(context, ListActivity.class);
@@ -65,12 +65,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         //create RemoteViews for custom collapsed notification layout
         RemoteViews collapsedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_collapsed);
         collapsedNotification.setTextViewText(R.id.notif_collapsed_task_description, reminder.getTaskDescription());
+        collapsedNotification.setTextViewText(R.id.notif_collapsed_timestamp, reminder.get12hrTimeWithAmPm());
         collapsedNotification.setImageViewResource(R.id.notif_collapsed_icon, db.getListIcon(listID));
 
 
         //create RemoteViews for custom collapsed notification layout
         RemoteViews expandedNotification = new RemoteViews(context.getPackageName(), R.layout.notification_expanded);
         expandedNotification.setTextViewText(R.id.notif_expanded_task_description, reminder.getTaskDescription());
+        expandedNotification.setTextViewText(R.id.notif_expanded_timestamp, reminder.get12hrTimeWithAmPm());
         expandedNotification.setTextViewText(R.id.notif_expanded_list_name, db.getListName(listID));
         expandedNotification.setImageViewResource(R.id.notif_expanded_icon, db.getListIcon(listID));
 

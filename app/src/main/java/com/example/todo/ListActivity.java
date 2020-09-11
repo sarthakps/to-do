@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +34,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.r0adkll.slidr.Slidr;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,18 +48,21 @@ import Database.DatabaseManager;
 import Objects.ConstantsDB;
 import Objects.Reminder;
 import Objects.TaskObject;
+import Objects.ThemeObject;
 
 public class ListActivity extends AppCompatActivity {
 
     private Intent intent;
+    private static Context mContext;
     private View view_change_theme, view_add_task;
-    Toolbar toolbar;
-    CollapsingToolbarLayout collapsingToolbar;
+    private static Toolbar toolbar;
+    private static CollapsingToolbarLayout collapsingToolbar;
 
     private RecyclerView tasksRecycler;
     private ListItemTaskAdapter tasksListAdapter;
 
     private static ImageView parentBackground;
+    private static ImageView floatingButton;
 
     private static int themeRes, listID;
     private List<TaskObject> taskObjectList = new ArrayList<>();
@@ -64,6 +72,10 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        Slidr.attach(this);
+
+        mContext = this;
 
         //setup status bar
         getWindow().getDecorView().setSystemUiVisibility(
@@ -78,7 +90,6 @@ public class ListActivity extends AppCompatActivity {
 
         loadTasksFromDatabase();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,6 +118,7 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void assignUIcomponents() {
+        toolbar = findViewById(R.id.todos_toolbar);
         collapsingToolbar = findViewById(R.id.todos_collapsing_toolbar);
 
         toolbar = findViewById(R.id.todos_toolbar);
@@ -120,15 +132,17 @@ public class ListActivity extends AppCompatActivity {
         String theme = db.getListTheme(listID);
         themeRes = getResources().getIdentifier(theme, "drawable", getApplicationContext().getPackageName());
         parentBackground = findViewById(R.id.todos_parentBackground);
-        parentBackground.setImageResource(themeRes);
 
-        findViewById(R.id.todos_add_task_floatBtn).setOnClickListener(new View.OnClickListener() {
+        floatingButton = findViewById(R.id.todos_add_task_floatBtn);
+        floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 add_task_popup();
                 findViewById(R.id.todos_add_task_floatBtn).animate().rotation(60).setDuration(400).start();
             }
         });
+
+        setBackground(themeRes);
 
         // setup Recycler View
         tasksRecycler = findViewById(R.id.todos_tasks_recycler);
@@ -425,12 +439,20 @@ public class ListActivity extends AppCompatActivity {
     }
 
     public static void setBackground(int imageRes) {
-        // parentLayout.setBackgroundResource(imageRes);
         themeRes = imageRes;
         parentBackground.setImageResource(imageRes);
+
+        int accentPrimary = mContext.getResources().getColor(new ThemeObject(themeRes, false).getPrimaryAccentForTheme());
+        int accentSecondary =  mContext.getResources().getColor(new ThemeObject(themeRes, false).getSecondaryAccentForTheme());
+        collapsingToolbar.setCollapsedTitleTextColor(accentPrimary);
+        collapsingToolbar.setExpandedTitleColor(accentPrimary);
+
+        toolbar.getOverflowIcon().setColorFilter(accentPrimary, PorterDuff.Mode.SRC_ATOP);
+
+        floatingButton.getDrawable().setColorFilter(accentSecondary,  PorterDuff.Mode.SRC_ATOP);
     }
 
-    private ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+    private ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;

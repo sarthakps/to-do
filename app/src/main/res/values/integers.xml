@@ -2,5 +2,6 @@
 <resources>
 
     <integer name="slide_in_time">1500</integer>
+    <integer name="list_activity_slide_in">800</integer>
 
 </resources>

@@ -6,6 +6,12 @@
 
     </style>
 
+    <style name="listActivityTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <style name="toolbar_homepage_title_text_appearance" parent="@style/Base.TextAppearance.AppCompat.Title">
         <item name="android:textSize">27sp</item>
         <item name="android:textColor">@color/light_gray</item>
