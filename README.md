@@ -1,5 +1,13 @@
 # to-do
 
+### Features
+  - Add/Remove pending or untimed tasks
+  - Mark tasks as important
+  - Automated lists for quick access
+  - Variety of themes for high customizability
+  - Customized Notifications
+  - Supports Android Marshmallow 6.0 and above
+
 * <h3> To Do is a task management app to help you organize your daily activities and deadlines. </h3>
 # <img src="https://user-images.githubusercontent.com/45737914/92932402-7da29200-f462-11ea-8d02-791a12140b0d.jpg" width="25%">
 
