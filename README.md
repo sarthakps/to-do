@@ -1,5 +1,7 @@
 # to-do
 
+Download the apk from [HERE](https://drive.google.com/file/d/1GHhOt-iSWu7ERT-y84aIx9m4-uZaHnEZ/view?usp=sharing) to try it out!
+
 ### Features
   - Add/Remove pending or untimed tasks
   - Mark tasks as important
