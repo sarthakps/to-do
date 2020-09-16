@@ -2,13 +2,17 @@
 
 Download the apk from [HERE](https://drive.google.com/file/d/1GHhOt-iSWu7ERT-y84aIx9m4-uZaHnEZ/view?usp=sharing) to try it out!
 
+### Note
+- The app currently has been beta tested only on Android 10(SDK Version 29). It may not work/install properly on other previous versions. Check out the existing issues or open a new one [HERE](https://github.com/sarthakps/to-do/issues).
+
 ### Features
   - Add/Remove pending or untimed tasks
   - Mark tasks as important
   - Automated lists for quick access
   - Variety of themes for high customizability
   - Customized Notifications
-  - Supports Android Marshmallow 6.0 and above
+  - Supports Android 8.1 and above
+
 
 * <h3> To Do is a task management app to help you organize your daily activities and deadlines. </h3>
 # <img src="https://user-images.githubusercontent.com/45737914/92932402-7da29200-f462-11ea-8d02-791a12140b0d.jpg" width="25%">
