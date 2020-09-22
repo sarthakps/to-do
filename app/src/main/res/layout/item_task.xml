@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/hori_medium"
-            android:text="This is the task that is due!"
+            android:text="@string/taskDue"
             android:textColor="@color/white"
             android:textSize="@dimen/text_medium"
             app:layout_constraintTop_toTopOf="parent" />

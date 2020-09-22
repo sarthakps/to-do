@@ -1,9 +1,21 @@
 <resources>
     <string name="app_name">To Do</string>
-
     <string name="empty_group_placeholder">There\'s nothing here!</string>
     <string name="add_username_hint">enter your username...</string>
     <string name="add_list_static">Add List</string>
     <string name="add_new_list_hint">Enter List Name</string>
-
+    <string name="selectList">Select a list</string>
+    <string name="newTitle">Enter the new title</string>
+    <string name="listName">List Name</string>
+    <string name="noDueToday">No tasks due today!</string>
+    <string name="noDueTomorrow">No tasks due tomorrow!</string>
+    <string name="noImportant">No important tasks!</string>
+    <string name="addTaskHint">Add a task</string>
+    <string name="remindMeAt">Remind me at:</string>
+    <string name="pickDate">Pick a Date</string>
+    <string name="xClearDueDate">X Clear due date</string>
+    <string name="taskDue">This is the task that is due!</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="done">Done</string>
 </resources>
