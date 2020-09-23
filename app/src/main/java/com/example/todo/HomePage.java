@@ -202,7 +202,7 @@ public class HomePage extends AppCompatActivity {
     //read username from shared preferences and set toolbar title = username
     private void loadFromDB() {
         //load persistent list
-        persistentList.add(new ListObject(-200, "Today", R.drawable.icon_today, false));
+        persistentList.add(new ListObject(-200,"Today", R.drawable.icon_today, false));
         persistentList.add(new ListObject(-400, "Tomorrow", R.drawable.icon_tomorrow, false));
         persistentList.add(new ListObject(-600, "Important", R.drawable.icon_star, false));
         persistentAdapter.notifyDataSetChanged();

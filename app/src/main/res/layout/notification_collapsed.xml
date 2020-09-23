@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/hori_small"
-            android:text="To Do"
+            android:text="@string/app_name"
             android:textColor="@color/accentPrimary"
             android:textSize="@dimen/text_medium" />
 
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/hori_small"
-            android:text="This is the task that is due"
+            android:text="@string/placeholderTaskDue"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="@dimen/text_small" />

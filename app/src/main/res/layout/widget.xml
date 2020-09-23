@@ -11,7 +11,7 @@
         android:id="@+id/widget_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select a list"
+        android:text="@string/selectList"
         android:textSize="@dimen/text_normal"
         android:textColor="@color/white"
         android:layout_alignParentStart="true"

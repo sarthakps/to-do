@@ -22,7 +22,7 @@
         android:id="@+id/impTasks_no_imp_tasks_static_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No important tasks!"
+        android:text="@string/noTaskImportant"
         android:textColor="@color/accentPrimary"
         android:textSize="@dimen/text_large"
         app:layout_constraintBottom_toBottomOf="parent"
