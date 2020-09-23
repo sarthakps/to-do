@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/hori_small"
-            android:text="@string/taskDue"
+            android:text="@string/placeholderTaskDue"
             android:textColor="@color/black"
             android:textSize="@dimen/text_normal"
             android:maxLines="3"/>
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/hori_small"
-            android:text="@string/listName"
+            android:text="@string/placeholderListName"
             android:textColor="@color/greyish_blue"
             android:textSize="@dimen/text_small" />
 

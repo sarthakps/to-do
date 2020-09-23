@@ -22,7 +22,7 @@
         android:id="@+id/dueTomorrow_no_due_today_static_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/noDueTomorrow"
+        android:text="@string/noTaskDueTomorrow"
         android:textColor="@color/accentPrimary"
         android:textSize="@dimen/text_large"
         app:layout_constraintEnd_toEndOf="parent"
