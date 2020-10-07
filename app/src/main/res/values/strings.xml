@@ -19,5 +19,9 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="done">Done</string>
     <string name="important">Important</string>
+    <string name="changeUsername">Change Username</string>
+    <string name="enterNewUsername">Enter New Username below</string>
+    <string name="cancel">CANCEL</string>
+    <string name="change">CHANGE</string>
 
 </resources>
