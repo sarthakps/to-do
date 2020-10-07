@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:titleTextAppearance="@style/collapsing_toolbar_title_text_collapsed"
-        app:title="Important"
+        app:title="@string/important"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
