@@ -35,7 +35,4 @@
     <!-- ICON -->
     <dimen name="list_icon_size">32dp</dimen>
 
-    <!-- LAYOUT HEIGHT -->
-    <dimen name="text_view_extra_large">56dp</dimen>
-
 </resources>
