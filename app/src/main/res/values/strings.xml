@@ -18,4 +18,6 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="done">Done</string>
+    <string name="important">Important</string>
+
 </resources>
