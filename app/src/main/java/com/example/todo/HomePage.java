@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,6 +86,9 @@ public class HomePage extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.btnMenu_add_todo_list:
                 add_todo_list_popup();
+                return true;
+            case R.id.btnChangeUsername:
+                change_username_popup();
                 return true;
         }
 
@@ -185,6 +189,44 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        alertDialog.show();
+    }
+
+    public void change_username_popup(){
+        //inflating the change username pop out layout
+        View viewLocal;
+        viewLocal = LayoutInflater.from(getApplicationContext()).inflate(R.layout.popup_change_username,null);
+        final EditText etNewUsername = viewLocal.findViewById(R.id.popup_change_username);
+        final String currentTitle = getSupportActionBar().getTitle().toString();
+
+        etNewUsername.setText(currentTitle);
+
+        //creating ALERT DIALOG
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+        builder.setView(viewLocal);
+        final AlertDialog alertDialog = builder.create();
+
+        // Cancel button click listener
+        viewLocal.findViewById(R.id.popup_change_username_cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
+
+        // Change button click listener
+        viewLocal.findViewById(R.id.popup_change_username_done_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!etNewUsername.getText().toString().isEmpty()){
+                    // changing the username
+                    SharedPreferences prefs = getSharedPreferences("user_data", MODE_PRIVATE);
+                    prefs.edit().putString("username", etNewUsername.getText().toString().trim()).apply();
+                    getSupportActionBar().setTitle(getSharedPreferences("user_data", MODE_PRIVATE).getString("username", "To Do"));
+                    alertDialog.cancel();
+                }
+            }
+        });
         alertDialog.show();
     }
 

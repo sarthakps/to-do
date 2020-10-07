@@ -8,5 +8,8 @@
         app:showAsAction="always"
         android:icon="@drawable/icon_add_todo"
         android:title=""/>
+    <item android:title="@string/changeUsername"
+        android:id="@+id/btnChangeUsername"
+        />
 
 </menu>

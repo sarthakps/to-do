@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/placeholder_popup_change_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/hori_small"
+        android:layout_marginTop="@dimen/vert_large"
+        android:layout_marginEnd="@dimen/hori_extra_large"
+        android:gravity="left|fill_vertical"
+        android:hint="@string/enterNewUsername"
+        android:inputType="textCapWords"
+        android:singleLine="true"
+        android:textSize="@dimen/text_large"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textPrimary" />
+
+    <EditText
+        android:id="@+id/popup_change_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/changeUsername"
+        android:textColor="@color/textPrimary"
+        android:textSize="@dimen/text_large"
+        android:inputType="textCapWords"
+        android:textColorHint="@color/textPrimary"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/vert_small"
+        android:layout_marginBottom="@dimen/vert_small"
+        android:layout_marginStart="@dimen/hori_extra_large"
+        android:layout_marginEnd="@dimen/hori_extra_large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/popup_change_username_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:clickable="true"
+            android:textColor="@color/textPrimaryBright"
+            android:focusable="true"/>
+
+        <Button
+            android:id="@+id/popup_change_username_done_btn"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change"
+            android:textColor="@color/textPrimaryBright"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+
+</LinearLayout>
