@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/transparent">
+
+    <TextView
+        android:id="@+id/placeholder_popup_delete_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/hori_small"
+        android:layout_marginTop="@dimen/vert_large"
+        android:layout_marginEnd="@dimen/hori_extra_large"
+        android:gravity="left|fill_vertical"
+        android:text="@string/deleteList"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/accentPrimary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/popup_delete_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:clickable="true"
+            android:textColor="@color/textPrimaryBright"
+            android:focusable="true"/>
+
+        <Button
+            android:id="@+id/popup_delete_confirm_btn"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm"
+            android:textColor="@color/textPrimaryBright"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+
+</LinearLayout>
