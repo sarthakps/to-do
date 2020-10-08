@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    android:background="@color/transparent"
+    android:background="#FF5722"
     android:padding="10dp"
     android:orientation="vertical">
 
@@ -12,13 +12,16 @@
         android:layout_height="wrap_content"
         android:text="@string/rename_list_new_title"
         android:textSize="@dimen/text_medium"
-        android:textColor="@color/accentPrimary"
+        android:textColor="#263238"
         android:paddingBottom="@dimen/vert_small"/>
 
     <EditText
         android:id="@+id/popup_rename_list_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"/>
+        android:background="#43A047"
+        android:shadowColor="#FFFFFF"
+        android:textColor="#F5F5F5"
+        android:visibility="visible" />
 
 </LinearLayout>
