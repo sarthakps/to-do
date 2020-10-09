@@ -110,7 +110,7 @@ public class ListActivity extends AppCompatActivity {
                 break;
 
             case R.id.todos_delete_list:
-                delete_list_popup(listID);
+                delete_list_popup();
                 break;
         }
         return true;
@@ -208,7 +208,7 @@ public class ListActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void delete_list_popup(final int lID){
+    public void delete_list_popup(){
         //inflating the delete list pop out layout
         View view_delete_list;
         view_delete_list = LayoutInflater.from(getApplicationContext()).inflate(R.layout.popup_delete_list,null);
@@ -230,7 +230,7 @@ public class ListActivity extends AppCompatActivity {
         view_delete_list.findViewById(R.id.popup_delete_confirm_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatabaseManager(getBaseContext()).removeListAndChildTasks(lID);
+                new DatabaseManager(getBaseContext()).removeListAndChildTasks(listID);
                 HomePage.listDeleted(listID);
                 finish();
             }
