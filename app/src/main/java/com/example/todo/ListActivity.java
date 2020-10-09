@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -109,9 +110,7 @@ public class ListActivity extends AppCompatActivity {
                 break;
 
             case R.id.todos_delete_list:
-                new DatabaseManager(getBaseContext()).removeListAndChildTasks(listID);
-                HomePage.listDeleted(listID);
-                finish();
+                delete_list_popup();
                 break;
         }
         return true;
@@ -205,6 +204,37 @@ public class ListActivity extends AppCompatActivity {
         themeChangeRecycler.scrollToPosition(currentThemePosition - 2);
 
         adapter.setID(listID);
+
+        alertDialog.show();
+    }
+
+    public void delete_list_popup(){
+        //inflating the delete list pop out layout
+        View view_delete_list;
+        view_delete_list = LayoutInflater.from(getApplicationContext()).inflate(R.layout.popup_delete_list,null);
+
+        //creating ALERT DIALOG
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
+        builder.setView(view_delete_list);
+        final AlertDialog alertDialog = builder.create();
+
+        // Cancel button click listener
+        view_delete_list.findViewById(R.id.popup_delete_cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
+
+        // Confirm button click listener
+        view_delete_list.findViewById(R.id.popup_delete_confirm_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatabaseManager(getBaseContext()).removeListAndChildTasks(listID);
+                HomePage.listDeleted(listID);
+                finish();
+            }
+        });
 
         alertDialog.show();
     }
