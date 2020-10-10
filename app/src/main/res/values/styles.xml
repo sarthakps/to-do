@@ -5,6 +5,10 @@
         <item name="android:statusBarColor">@color/transparent</item>
 
     </style>
+    <style name="rename_list_edittext" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorControlNormal" >@color/redBright</item>
+        <item name="colorControlActivated">#23C3D5</item>
+    </style>
 
     <style name="listActivityTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/transparent</item>

@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="visible"
-    android:background="#FF5722"
-    android:padding="10dp"
-    android:orientation="vertical">
+    android:background="@color/transparent"
+    android:backgroundTint="#0BA5B6"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:visibility="visible">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/vert_small"
         android:text="@string/rename_list_new_title"
-        android:textSize="@dimen/text_medium"
-        android:textColor="#263238"
-        android:paddingBottom="@dimen/vert_small"/>
+        android:textColor="#23C3D5"
+        android:textSize="@dimen/text_medium" />
 
     <EditText
         android:id="@+id/popup_rename_list_edittext"
+        android:hint="rename your list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#43A047"
+        android:background="@color/transparent"
+        android:backgroundTint="#D50000"
         android:shadowColor="#FFFFFF"
         android:textColor="#F5F5F5"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:theme="@style/rename_list_edittext"/>
 
 </LinearLayout>
