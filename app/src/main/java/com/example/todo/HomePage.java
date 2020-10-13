@@ -14,6 +14,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,8 @@ import Adapters.ListTodoAdapter;
 import Adapters.ThemeSelectorAdapter;
 import AlarmHelpers.AlarmReceiver;
 import Database.DatabaseManager;
+import Helper.MyButtonClickListener;
+import Helper.SwipeToDeleteCallback;
 import Objects.ConstantsDB;
 import Objects.ListObject;
 import Objects.Reminder;
@@ -112,7 +116,23 @@ public class HomePage extends AppCompatActivity {
         //setup dynamic list's recycler
         dynamicRecycler = findViewById(R.id.homepage_dynamic_todo_recycler);
         dynamicRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this));
-        new ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(dynamicRecycler);
+
+        //swipe to delete call back for dynamic list
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getApplicationContext(),dynamicRecycler,200) {
+            @Override
+            public void instantiateMyButton(final RecyclerView.ViewHolder viewHolder, List<SwipeToDeleteCallback.MyButton> buffer) {
+               buffer.add(new MyButton(getApplicationContext(),"Delete",30,0, Color.RED,
+                       new MyButtonClickListener(){
+                           @Override
+                           public void onClick(int pos) {
+                               DatabaseManager db = new DatabaseManager(getBaseContext());
+                               db.removeListAndChildTasks(dynamicList.get(pos).getId());
+                               dynamicList.remove(pos);
+                               dynamicAdapter.notifyItemRemoved(pos);
+                           }
+                       }));
+            }
+        };
 
         //adapter for persistent list
         persistentAdapter = new ListTodoAdapter(HomePage.this, R.layout.list_todo, persistentList);
@@ -298,19 +318,4 @@ public class HomePage extends AppCompatActivity {
         dailyAlarm.setAlarm(getBaseContext(), new Reminder(), -200);
     }
 
-    private ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            DatabaseManager db = new DatabaseManager(getBaseContext());
-            // remove list from database
-            db.removeListAndChildTasks(dynamicList.get(viewHolder.getAdapterPosition()).getId());
-            dynamicList.remove(viewHolder.getAdapterPosition());
-            dynamicAdapter.notifyItemRemoved(viewHolder.getPosition());
-        }
-    };
 }
