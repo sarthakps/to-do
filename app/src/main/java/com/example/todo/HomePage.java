@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -14,6 +13,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,10 +31,12 @@ import Adapters.ListTodoAdapter;
 import Adapters.ThemeSelectorAdapter;
 import AlarmHelpers.AlarmReceiver;
 import Database.DatabaseManager;
+import SwipeHelper.SwipeToDeleteCallback;
+import SwipeHelper.onSwipeDeleteButtonListener;
 import Objects.ConstantsDB;
 import Objects.ListObject;
 import Objects.Reminder;
-import Objects.ThemeObject;
+
 
 public class HomePage extends AppCompatActivity {
 
@@ -112,7 +114,23 @@ public class HomePage extends AppCompatActivity {
         //setup dynamic list's recycler
         dynamicRecycler = findViewById(R.id.homepage_dynamic_todo_recycler);
         dynamicRecycler.setLayoutManager(new LinearLayoutManager(HomePage.this));
-        new ItemTouchHelper(swipeToDeleteCallback).attachToRecyclerView(dynamicRecycler);
+
+        //swipe to delete call back for dynamic list
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getApplicationContext(),dynamicRecycler,200) {
+            @Override
+            public void instantiateMyButton(final RecyclerView.ViewHolder viewHolder, List<SwipeToDeleteCallback.MyButton> buffer) {
+                buffer.add(new MyButton(getApplicationContext(),"Delete",30,0, Color.RED,
+                        new onSwipeDeleteButtonListener(){
+                            @Override
+                            public void onClick(int pos) {
+                                DatabaseManager db = new DatabaseManager(getBaseContext());
+                                db.removeListAndChildTasks(dynamicList.get(pos).getId());
+                                dynamicList.remove(pos);
+                                dynamicAdapter.notifyItemRemoved(pos);
+                            }
+                        }));
+            }
+        };
 
         //adapter for persistent list
         persistentAdapter = new ListTodoAdapter(HomePage.this, R.layout.list_todo, persistentList);
@@ -298,19 +316,4 @@ public class HomePage extends AppCompatActivity {
         dailyAlarm.setAlarm(getBaseContext(), new Reminder(), -200);
     }
 
-    private ItemTouchHelper.SimpleCallback swipeToDeleteCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            DatabaseManager db = new DatabaseManager(getBaseContext());
-            // remove list from database
-            db.removeListAndChildTasks(dynamicList.get(viewHolder.getAdapterPosition()).getId());
-            dynamicList.remove(viewHolder.getAdapterPosition());
-            dynamicAdapter.notifyItemRemoved(viewHolder.getPosition());
-        }
-    };
 }
