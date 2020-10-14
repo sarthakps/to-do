@@ -236,7 +236,7 @@ public class HomePage extends AppCompatActivity {
             if (dynamicList.get(i).getId() == ID) {
                 dynamicList.remove(i);
                 dynamicAdapter.notifyItemRemoved(i);
-                dynamicAdapter.notifyDataSetChanged();
+                dynamicAdapter.notifyItemChanged(i);
                 break;
             }
         }
