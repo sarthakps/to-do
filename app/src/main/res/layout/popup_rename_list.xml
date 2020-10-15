@@ -2,8 +2,6 @@
 <LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    android:backgroundTint="#0BA5B6"
     android:orientation="vertical"
     android:padding="15dp"
     android:visibility="visible">
@@ -13,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/vert_small"
         android:text="@string/rename_list_new_title"
-        android:textColor="#23C3D5"
+        android:textColor="@color/accentPrimary"
         android:textSize="@dimen/text_medium" />
 
     <EditText
@@ -21,11 +19,7 @@
         android:hint="rename your list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:backgroundTint="#D50000"
-        android:shadowColor="#FFFFFF"
-        android:textColor="#F5F5F5"
-        android:visibility="visible"
+        android:textColor="@color/white"
         android:theme="@style/rename_list_edittext"/>
 
 </LinearLayout>
