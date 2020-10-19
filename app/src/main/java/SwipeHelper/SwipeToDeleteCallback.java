@@ -179,7 +179,7 @@ public abstract class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallba
             }else{
                 Drawable d = ContextCompat.getDrawable(context,imageResID);
                 Bitmap bitmap = drawableToBitmap(d);
-                c.drawBitmap(bitmap,(rectF.left+rectF.right)/2,(rectF.top+rectF.bottom)/2,p);
+                c.drawBitmap(bitmap,4.4f*cWidth,rectF.top+(cHeight/4),p);
             }
             clickRegion = rectF;
             this.pos = pos;

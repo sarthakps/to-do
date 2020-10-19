@@ -119,7 +119,7 @@ public class HomePage extends AppCompatActivity {
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getApplicationContext(),dynamicRecycler,200) {
             @Override
             public void instantiateMyButton(final RecyclerView.ViewHolder viewHolder, List<SwipeToDeleteCallback.MyButton> buffer) {
-                buffer.add(new MyButton(getApplicationContext(),"Delete",30,0, Color.RED,
+                buffer.add(new MyButton(getApplicationContext(),"",30,R.drawable.icon_delete, Color.RED,
                         new onSwipeDeleteButtonListener(){
                             @Override
                             public void onClick(int pos) {
