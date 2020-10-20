@@ -19,6 +19,7 @@
         android:id="@+id/popup_rename_list_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:visibility="visible"/>
 
 </LinearLayout>
