@@ -50,6 +50,72 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/popup_datetime_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/hori_extra_large"
+        android:layout_marginTop="@dimen/vert_large"
+        android:layout_marginEnd="@dimen/hori_extra_large"
+        android:layout_marginBottom="@dimen/vert_large"
+        android:background="@color/greyish_blue"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/popup_datetime_nine_am"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nine_am"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:textColor="@color/accentSecondary"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/popup_datetime_twelve_pm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/twelve_am"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:textColor="@color/accentSecondary"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/popup_datetime_three_pm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/three_pm"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:textColor="@color/accentSecondary"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:padding="3dp"/>
+
+        <TextView
+            android:id="@+id/popup_datetime_six_pm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/six_pm"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/ripple_effect_rectangle"
+            android:textColor="@color/accentSecondary"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:padding="3dp"/>
+
+    </LinearLayout>
+
     <TimePicker
         android:id="@+id/popup_datetime_time_picker"
         android:layout_width="wrap_content"

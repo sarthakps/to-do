@@ -327,6 +327,38 @@ public class ListActivity extends AppCompatActivity {
         timePicker.setCurrentHour(12);
         timePicker.setCurrentMinute(0);
 
+        //set time picker's time to 9 am
+        view_datetime_popup.findViewById(R.id.popup_datetime_nine_am).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePicker.setCurrentHour(9);
+            }
+        });
+
+        //set time picker's time to 12 pm
+        view_datetime_popup.findViewById(R.id.popup_datetime_twelve_pm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePicker.setCurrentHour(12);
+            }
+        });
+
+        //set time picker's time to 3 pm
+        view_datetime_popup.findViewById(R.id.popup_datetime_three_pm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePicker.setCurrentHour(15);
+            }
+        });
+
+        //set time picker's time to 6 pm
+        view_datetime_popup.findViewById(R.id.popup_datetime_six_pm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePicker.setCurrentHour(18);
+            }
+        });
+
         //done button listener
         view_datetime_popup.findViewById(R.id.popup_datetime_confirm).setOnClickListener(new View.OnClickListener() {
             @Override

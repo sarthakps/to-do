@@ -25,5 +25,9 @@
     <string name="change">CHANGE</string>
     <string name="deleteList">Are you sure you want to delete the list?</string>
     <string name="confirm">CONFIRM</string>
+    <string name="nine_am">9 AM</string>
+    <string name="twelve_am">12 PM</string>
+    <string name="three_pm">3 PM</string>
+    <string name="six_pm">6 PM</string>
 
 </resources>
